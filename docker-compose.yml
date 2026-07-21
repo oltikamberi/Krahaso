@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: krahaso-postgres
+    environment:
+      POSTGRES_DB: krahaso
+      POSTGRES_USER: krahaso
+      POSTGRES_PASSWORD: krahaso
+    ports:
+      # 5433 on the host to avoid clashing with a local Homebrew Postgres on 5432
+      - "5433:5432"
+    volumes:
+      - krahaso_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U krahaso"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: krahaso-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - krahaso_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  krahaso_pgdata:
+  krahaso_redisdata:

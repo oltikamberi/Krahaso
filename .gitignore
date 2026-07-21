@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Env files
+.env
+.env.local
+.env*.local
+
+# Node
+node_modules/
+dist/
+.next/
+out/
+
+# Java
+backend/target/
+
+# Logs
+*.log
