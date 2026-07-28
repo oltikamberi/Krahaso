@@ -1,5 +1,7 @@
 package com.krahaso.product;
 
+import com.krahaso.product.dto.CatalogStatsDto;
+import com.krahaso.product.dto.GroupedProductDto;
 import com.krahaso.product.dto.ProductDetailDto;
 import com.krahaso.product.dto.ProductSummaryDto;
 import org.springframework.data.domain.Page;
@@ -26,8 +28,14 @@ public class ProductController {
     public record PageResponse<T>(List<T> items, int page, int totalPages, long totalItems) implements Serializable {
     }
 
-    @GetMapping
-    public PageResponse<ProductSummaryDto> list(
+    @GetMapping("/stats")
+    public CatalogStatsDto stats() {
+        return productService.catalogStats();
+    }
+
+    /** Flat listings (one row per retailer offer) — used by admin/debug. */
+    @GetMapping("/listings")
+    public PageResponse<ProductSummaryDto> listings(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
@@ -41,9 +49,25 @@ public class ProductController {
                 result.getTotalElements());
     }
 
+    /** Grouped catalog — one card per product, offers from all retailers. */
+    @GetMapping
+    public PageResponse<GroupedProductDto> list(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean inStock,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "24") int size) {
+        Page<GroupedProductDto> result =
+                productService.findGrouped(category, minPrice, maxPrice, inStock, sort, page, Math.min(size, 100));
+        return new PageResponse<>(result.getContent(), result.getNumber(), result.getTotalPages(),
+                result.getTotalElements());
+    }
+
     @GetMapping("/search")
-    public List<ProductSummaryDto> search(@RequestParam("q") String query) {
-        return productService.search(query);
+    public List<GroupedProductDto> search(@RequestParam("q") String query) {
+        return productService.searchGrouped(query);
     }
 
     @GetMapping("/{id}")

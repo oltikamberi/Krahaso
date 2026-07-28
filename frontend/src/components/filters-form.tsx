@@ -22,7 +22,7 @@ export function FiltersForm() {
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "");
   const [inStock, setInStock] = useState(searchParams.get("inStock") === "true");
-  const [sort, setSort] = useState(searchParams.get("sort") ?? "newest");
+  const [sort, setSort] = useState(searchParams.get("sort") ?? "best");
 
   function apply(event?: React.FormEvent) {
     event?.preventDefault();
@@ -30,7 +30,7 @@ export function FiltersForm() {
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
     if (inStock) params.set("inStock", "true");
-    if (sort && sort !== "newest") params.set("sort", sort);
+    if (sort && sort !== "best") params.set("sort", sort);
     router.push(`${pathname}?${params}`);
   }
 
@@ -70,15 +70,16 @@ export function FiltersForm() {
         <Label>Rendit sipas</Label>
         <Select
           value={sort}
-          onValueChange={(value) => setSort(value ?? "newest")}
+          onValueChange={(value) => setSort(value ?? "best")}
         >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">Më të rejat</SelectItem>
+            <SelectItem value="best">Më të krahasueshmet</SelectItem>
             <SelectItem value="price_asc">Çmimi: nga më i ulëti</SelectItem>
             <SelectItem value="price_desc">Çmimi: nga më i larti</SelectItem>
+            <SelectItem value="newest">Emri A–ZH</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -49,72 +49,109 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.546 0.215 262.881);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /*
+   * Brand palette
+   * #003B71 brand · #F2C94C deal gold · #FFFFFF white · #F4F6F9 cool gray
+   * #27AE60 savings · #FF6B4A coral CTA · #1E293B charcoal text
+   */
+  --background: #ffffff;
+  --foreground: #1e293b;
+  --card: #f4f6f9;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --primary: #ff6b4a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f6f9;
+  --secondary-foreground: #003b71;
+  --muted: #f4f6f9;
+  --muted-foreground: #64748b;
+  --accent: #f4f6f9;
+  --accent-foreground: #003b71;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.546 0.215 262.881);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --ring: #ff6b4a;
+  --chart-1: #ff6b4a;
+  --chart-2: #003b71;
+  --chart-3: #27ae60;
+  --chart-4: #f4f6f9;
+  --chart-5: #f2c94c;
+  --radius: 0.5rem;
+  --sidebar: #f4f6f9;
+  --sidebar-foreground: #1e293b;
+  --sidebar-primary: #003b71;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffffff;
+  --sidebar-accent-foreground: #003b71;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #ff6b4a;
+
+  --brand: #003b71;
+  --brand-foreground: #ffffff;
+  --deal: #f2c94c;
+  --deal-foreground: #003b71;
+  --price: #1e293b;
+  --price-highlight: #003b71;
+  --price-muted: #64748b;
+  --savings: #27ae60;
+  --savings-bg: rgba(39, 174, 96, 0.12);
+  --action: #ff6b4a;
+  --action-foreground: #ffffff;
+  --action-hover: #e55a3e;
+  --cheapest-bg: rgba(242, 201, 76, 0.22);
+  --cheapest-border: rgba(242, 201, 76, 0.55);
+  --brand-soft: #003b71;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #000000;
+  --foreground: #f1f5f9;
+  --card: #121212;
+  --card-foreground: #f1f5f9;
+  --popover: #121212;
+  --popover-foreground: #f1f5f9;
+  --primary: #ff6b4a;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #93c5fd;
+  --muted: #1a1a1a;
+  --muted-foreground: #94a3b8;
+  --accent: #1a1a1a;
+  --accent-foreground: #93c5fd;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #ff6b4a;
+  --chart-1: #ff6b4a;
+  --chart-2: #60a5fa;
+  --chart-3: #27ae60;
+  --chart-4: #1a1a1a;
+  --chart-5: #f2c94c;
+  --sidebar: #121212;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #ff6b4a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #2a2a2a;
+  --sidebar-ring: #ff6b4a;
+
+  --brand: #003b71;
+  --brand-foreground: #ffffff;
+  --deal: #f2c94c;
+  --deal-foreground: #1e293b;
+  --price: #f1f5f9;
+  --price-highlight: #f2c94c;
+  --price-muted: #94a3b8;
+  --savings: #27ae60;
+  --savings-bg: rgba(39, 174, 96, 0.18);
+  --action: #ff6b4a;
+  --action-foreground: #ffffff;
+  --action-hover: #e55a3e;
+  --cheapest-bg: rgba(242, 201, 76, 0.16);
+  --cheapest-border: rgba(242, 201, 76, 0.4);
+  --brand-soft: #60a5fa;
 }
 
 @layer base {
@@ -126,5 +163,8 @@
   }
   html {
     @apply font-sans;
+  }
+  a {
+    color: inherit;
   }
 }

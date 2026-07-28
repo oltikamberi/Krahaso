@@ -1,41 +1,98 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { TrendingUp, Moon, Sun, Zap, Shield, Truck } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 export function SiteHeader() {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-
-  function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (query.trim()) {
-      router.push(`/kerko?q=${encodeURIComponent(query.trim())}`);
-    }
-  }
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link href="/" className="text-xl font-bold tracking-tight text-primary">
-          Krahaso
-        </Link>
-        <form onSubmit={submit} className="ml-auto flex w-full max-w-sm items-center gap-2">
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Kërko produkte..."
-            aria-label="Kërko produkte"
-          />
-          <Button type="submit" size="icon" aria-label="Kërko">
-            <Search className="h-4 w-4" />
-          </Button>
-        </form>
+    <>
+      <div style={{ backgroundColor: isDark ? "#000000" : "var(--brand)" }}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
+          <div
+            className="flex items-center gap-5 font-mono text-[11px]"
+            style={{ color: "rgba(255,255,255,0.85)" }}
+          >
+            <span className="flex items-center gap-1.5">
+              <Zap className="h-3 w-3" style={{ color: "var(--deal)" }} />
+              Çmime të përditësuara çdo ditë
+            </span>
+            <span className="hidden items-center gap-1.5 sm:flex">
+              <Shield className="h-3 w-3" style={{ color: "var(--deal)" }} />
+              Dyqane të verifikuara
+            </span>
+            <span className="hidden items-center gap-1.5 md:flex">
+              <Truck className="h-3 w-3" style={{ color: "var(--deal)" }} />
+              Dorëzim në Kosovë
+            </span>
+          </div>
+          <div className="font-mono text-[11px] text-white/80">🇽🇰 Kosova &bull; €EUR</div>
+        </div>
       </div>
-    </header>
+
+      <header
+        className="sticky top-0 z-50"
+        style={{ backgroundColor: isDark ? "#0a0a0a" : "var(--brand)" }}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3.5">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded"
+              style={{ backgroundColor: "var(--deal)" }}
+            >
+              <TrendingUp className="h-4 w-4" style={{ color: "var(--brand)" }} />
+            </div>
+            <div>
+              <span className="text-base font-extrabold tracking-tight text-white">Krahaso</span>
+              <span
+                className="text-base font-extrabold tracking-tight"
+                style={{ color: "var(--deal)" }}
+              >
+                {" "}Cmimin
+              </span>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggle}
+              aria-label={isDark ? "Tema e çelët" : "Tema e errët"}
+              className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:scale-110"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.22)",
+              }}
+            >
+              {isDark ? (
+                <Sun className="h-4 w-4" style={{ color: "var(--deal)" }} />
+              ) : (
+                <Moon className="h-4 w-4 text-white" />
+              )}
+            </button>
+            <button className="hidden text-sm font-medium text-white/80 transition-colors hover:text-white sm:block">
+              Hyrje
+            </button>
+            <button
+              className="rounded px-4 py-2 text-sm font-bold transition-colors"
+              style={{
+                backgroundColor: "var(--action)",
+                color: "var(--action-foreground)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--action-hover)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--action)";
+              }}
+            >
+              Regjistrohu
+            </button>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }

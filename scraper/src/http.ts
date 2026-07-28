@@ -8,10 +8,10 @@ import * as cheerio from "cheerio";
 export const http = got.extend({
   headers: {
     "user-agent":
-      "Mozilla/5.0 (compatible; KrahasoBot/0.1; +https://krahaso.com)",
-    accept: "text/html,application/xhtml+xml",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    accept: "text/html,application/xhtml+xml,application/json",
   },
-  timeout: { request: 20_000 },
+  timeout: { request: 30_000 },
   retry: { limit: 2 },
 });
 

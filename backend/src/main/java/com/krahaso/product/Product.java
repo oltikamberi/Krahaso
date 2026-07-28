@@ -58,6 +58,9 @@ public class Product {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> specs;
 
+    @Column(name = "match_key")
+    private String matchKey;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private Instant createdAt;
 
@@ -110,6 +113,10 @@ public class Product {
 
     public Map<String, Object> getSpecs() {
         return specs;
+    }
+
+    public String getMatchKey() {
+        return matchKey;
     }
 
     public Instant getCreatedAt() {

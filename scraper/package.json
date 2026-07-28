@@ -8,6 +8,10 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "scrape:once": "tsx src/run-once.ts",
+    "scrape:neptun": "tsx src/run-neptun.ts",
+    "scrape:aztech": "tsx src/run-aztech.ts",
+    "scrape:buton": "tsx src/run-buton.ts",
+    "scrape:75mall": "tsx src/run-75mall.ts",
     "start": "tsx src/index.ts"
   },
   "dependencies": {

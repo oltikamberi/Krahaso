@@ -9,6 +9,7 @@ import java.util.Map;
 
 public record ProductDetailDto(
         Long id,
+        String matchKey,
         String name,
         String brand,
         String imageUrl,
@@ -22,15 +23,25 @@ public record ProductDetailDto(
         String providerSlug,
         String providerWebsiteUrl,
         Map<String, Object> specs,
-        List<PricePointDto> priceHistory
+        List<PricePointDto> priceHistory,
+        List<ProductOfferDto> offers
 ) implements Serializable {
 
-    public static ProductDetailDto from(Product product, List<PricePointDto> priceHistory) {
+    public static ProductDetailDto from(
+            Product product,
+            List<PricePointDto> priceHistory,
+            List<ProductOfferDto> offers,
+            String preferredImageUrl
+    ) {
+        String imageUrl = preferredImageUrl != null && !preferredImageUrl.isBlank()
+                ? preferredImageUrl
+                : product.getImageUrl();
         return new ProductDetailDto(
                 product.getId(),
+                product.getMatchKey(),
                 product.getName(),
                 product.getBrand(),
-                product.getImageUrl(),
+                imageUrl,
                 product.getProductUrl(),
                 product.getCurrentPrice(),
                 product.getCurrency(),
@@ -41,7 +52,8 @@ public record ProductDetailDto(
                 product.getProvider().getSlug(),
                 product.getProvider().getWebsiteUrl(),
                 product.getSpecs(),
-                priceHistory
+                priceHistory,
+                offers
         );
     }
 }

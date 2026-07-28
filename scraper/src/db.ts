@@ -1,10 +1,16 @@
 import pg from "pg";
 import { config } from "./config.js";
+import { extractIdentitySpecs, matchKey } from "./normalize.js";
 import type { ScrapedProduct, SiteAdapter } from "./types.js";
 
 export const pool = new pg.Pool({ connectionString: config.databaseUrl });
 
-/** Insert the provider row if it doesn't exist yet, and return its id. */
+function mergedSpecs(product: ScrapedProduct): Record<string, string | number | boolean> {
+  const fromTitle = extractIdentitySpecs(product.name, product.brand);
+  // Explicit scraper specs win over title heuristics
+  return { ...fromTitle, ...product.specs };
+}
+
 export async function ensureProvider(
   provider: SiteAdapter["provider"],
 ): Promise<number> {
@@ -33,11 +39,6 @@ export interface UpsertResult {
   skipped: number;
 }
 
-/**
- * Upsert scraped products. A price_history row is only written when the
- * price or availability actually changed (or the product is new) — this is
- * the change detection that powers price-drop tracking.
- */
 export async function upsertProducts(
   providerId: number,
   products: ScrapedProduct[],
@@ -59,6 +60,9 @@ export async function upsertProducts(
       continue;
     }
 
+    const key = matchKey(product.name, product.brand);
+    const specs = mergedSpecs(product);
+
     const existing = await pool.query<{
       id: number;
       current_price: string;
@@ -72,8 +76,8 @@ export async function upsertProducts(
       const inserted = await pool.query<{ id: number }>(
         `INSERT INTO products
            (category_id, provider_id, external_id, name, brand, image_url,
-            product_url, current_price, currency, in_stock, specs)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            product_url, current_price, currency, in_stock, specs, match_key)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
          RETURNING id`,
         [
           catId,
@@ -86,7 +90,8 @@ export async function upsertProducts(
           product.price,
           product.currency,
           product.inStock,
-          JSON.stringify(product.specs),
+          JSON.stringify(specs),
+          key,
         ],
       );
       await pool.query(
@@ -106,8 +111,8 @@ export async function upsertProducts(
     await pool.query(
       `UPDATE products
        SET name = $1, brand = $2, image_url = $3, current_price = $4,
-           currency = $5, in_stock = $6, specs = $7, updated_at = now()
-       WHERE id = $8`,
+           currency = $5, in_stock = $6, specs = $7, match_key = $8, updated_at = now()
+       WHERE id = $9`,
       [
         product.name,
         product.brand,
@@ -115,7 +120,8 @@ export async function upsertProducts(
         product.price,
         product.currency,
         product.inStock,
-        JSON.stringify(product.specs),
+        JSON.stringify(specs),
+        key,
         row.id,
       ],
     );

@@ -1,8 +1,5 @@
 import Link from "next/link";
 import { ExternalLink, ImageOff } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Table,
@@ -12,7 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CategoryNavBar } from "@/components/category-nav-bar";
 import { formatPrice, getProduct } from "@/lib/api";
+import { upgradeImageUrl } from "@/lib/image-url";
+import { PriceComparisonStack } from "@/components/price-comparison-stack";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -23,117 +23,207 @@ export default async function ProductPage({ params }: PageProps) {
   const product = await getProduct(id);
   const history = [...product.priceHistory].reverse();
 
+  const offers =
+    product.offers && product.offers.length > 0
+      ? [...product.offers].sort((a, b) => a.price - b.price)
+      : [
+          {
+            id: product.id,
+            providerName: product.providerName,
+            providerSlug: product.providerSlug,
+            price: product.price,
+            currency: product.currency,
+            inStock: product.inStock,
+            productUrl: product.productUrl,
+          },
+        ];
+
+  const cheapest = offers[0];
+  const savings =
+    offers.length > 1 ? offers[offers.length - 1].price - cheapest.price : 0;
+  const imageUrl = upgradeImageUrl(product.imageUrl, "detail");
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="text-sm text-muted-foreground">
-        <Link href="/" className="hover:underline">
+    <div>
+      <CategoryNavBar className="md:hidden" />
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8">
+      <div className="font-mono text-sm" style={{ color: "var(--muted-foreground)" }}>
+        <Link href="/" className="hover:underline" style={{ color: "var(--brand-soft)" }}>
           Kryefaqja
         </Link>
         {" / "}
-        <Link href={`/kategoria/${product.categorySlug}`} className="hover:underline">
+        <Link
+          href={`/kategoria/${product.categorySlug}`}
+          className="hover:underline"
+          style={{ color: "var(--brand-soft)" }}
+        >
           {product.categoryName}
         </Link>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="flex min-h-64 items-center justify-center rounded-lg border bg-muted/40">
-          {product.imageUrl ? (
+      <div className="grid items-start gap-8 lg:grid-cols-2">
+        <div
+          className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-white"
+          style={{ border: "1px solid var(--border)" }}
+        >
+          {/* Soft stage wash so white product photos still have depth */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(0,59,113,0.04) 0%, transparent 65%)",
+            }}
+          />
+          {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={product.imageUrl}
+              src={imageUrl}
               alt={product.name}
-              className="max-h-80 object-contain p-6"
+              referrerPolicy="no-referrer"
+              className="relative z-[1] h-full w-full object-contain p-8 md:p-12 lg:p-14"
             />
           ) : (
-            <ImageOff className="h-12 w-12 text-muted-foreground/40" aria-hidden />
+            <ImageOff
+              className="relative z-[1] h-14 w-14 opacity-30"
+              style={{ color: "var(--muted-foreground)" }}
+              aria-hidden
+            />
           )}
         </div>
 
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-muted-foreground">{product.brand}</p>
-          <h1 className="text-2xl font-bold">{product.name}</h1>
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold">
-              {formatPrice(product.price, product.currency)}
-            </span>
-            {product.inStock ? (
-              <Badge variant="secondary" className="text-green-700">
+          {product.brand && (
+            <p
+              className="font-mono text-[10px] font-semibold uppercase tracking-widest"
+              style={{ color: "var(--brand-soft)" }}
+            >
+              {product.brand}
+            </p>
+          )}
+          <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: "var(--foreground)" }}>
+            {product.name}
+          </h1>
+
+          <div className="flex flex-wrap items-end gap-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-wider" style={{ color: "var(--muted-foreground)" }}>
+                Nga {offers.length} dyqane · më i liri
+              </p>
+              <span className="font-mono text-3xl font-extrabold" style={{ color: "var(--price-highlight)" }}>
+                {formatPrice(cheapest.price, product.currency)}
+              </span>
+            </div>
+            {savings >= 10 && (
+              <span className="mb-1 text-sm font-semibold" style={{ color: "var(--savings)" }}>
+                Kurseni deri {formatPrice(savings, product.currency)}
+              </span>
+            )}
+            {cheapest.inStock ? (
+              <span
+                className="mb-1.5 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
+                style={{ backgroundColor: "var(--savings)" }}
+              >
                 Në stok
-              </Badge>
+              </span>
             ) : (
-              <Badge variant="outline" className="text-muted-foreground">
+              <span
+                className="mb-1.5 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+                style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+              >
                 S&apos;ka stok
-              </Badge>
+              </span>
             )}
           </div>
-          <p className="text-sm text-muted-foreground">
-            Ofruar nga <span className="font-medium text-foreground">{product.providerName}</span>
-          </p>
-          <Button
-            className="w-fit"
-            render={
-              <a
-                href={product.productUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-            }
-          >
-            Shko te dyqani
-            <ExternalLink className="ml-1.5 h-4 w-4" />
-          </Button>
 
-          <Separator className="my-2" />
+          <a
+            href={cheapest.productUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex w-fit items-center gap-2 rounded px-5 py-2.5 text-sm font-bold transition-colors"
+            style={{
+              backgroundColor: "var(--action)",
+              color: "var(--action-foreground)",
+            }}
+          >
+            Shko te {cheapest.providerName}
+            <ExternalLink className="h-4 w-4" />
+          </a>
+
+          <Separator className="my-1" />
+
+          <PriceComparisonStack offers={offers} currency={product.currency} />
+
+          <Separator className="my-1" />
 
           <div>
-            <h2 className="mb-3 font-semibold">Specifikat</h2>
-            <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">
-              {Object.entries(product.specs).map(([key, value]) => (
-                <div key={key} className="flex gap-2">
-                  <dt className="text-muted-foreground">{key}:</dt>
-                  <dd className="font-medium">{String(value)}</dd>
-                </div>
-              ))}
-            </dl>
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wider" style={{ color: "var(--foreground)" }}>
+              Specifikat
+            </h2>
+            {Object.keys(product.specs).length === 0 ? (
+              <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+                Specifikat do të shtohen së shpejti.
+              </p>
+            ) : (
+              <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">
+                {Object.entries(product.specs).map(([key, value]) => (
+                  <div key={key} className="flex gap-2">
+                    <dt style={{ color: "var(--muted-foreground)" }}>{key}:</dt>
+                    <dd className="font-medium" style={{ color: "var(--foreground)" }}>
+                      {String(value)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
           </div>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Historia e çmimit</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Çmimi</TableHead>
-                <TableHead>Disponueshmëria</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {history.map((point, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    {new Date(point.scrapedAt).toLocaleDateString("sq-AL", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {formatPrice(point.price, product.currency)}
-                  </TableCell>
-                  <TableCell>
-                    {point.inStock ? "Në stok" : "Jo në stok"}
-                  </TableCell>
+      <div
+        className="overflow-hidden rounded-lg"
+        style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+      >
+        <div className="border-b px-5 py-4" style={{ borderColor: "var(--border)" }}>
+          <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: "var(--foreground)" }}>
+            Historia e çmimit
+          </h2>
+        </div>
+        <div className="p-2">
+          {history.length === 0 ? (
+            <p className="px-3 py-6 text-sm" style={{ color: "var(--muted-foreground)" }}>
+              Nuk ka ende histori çmimi për këtë listim.
+            </p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Çmimi</TableHead>
+                  <TableHead>Disponueshmëria</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {history.map((point, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      {new Date(point.scrapedAt).toLocaleDateString("sq-AL", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </TableCell>
+                    <TableCell className="font-mono font-semibold" style={{ color: "var(--price-highlight)" }}>
+                      {formatPrice(point.price, product.currency)}
+                    </TableCell>
+                    <TableCell>{point.inStock ? "Në stok" : "Jo në stok"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+      </div>
+      </div>
     </div>
   );
 }

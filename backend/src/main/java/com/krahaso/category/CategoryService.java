@@ -17,7 +17,8 @@ public class CategoryService {
 
     @Cacheable("categories")
     public List<CategoryDto> findAll() {
-        return categoryRepository.findAll(Sort.by("name")).stream()
+        return categoryRepository.findAll(Sort.by("sortOrder").ascending().and(Sort.by("name")))
+                .stream()
                 .map(CategoryDto::from)
                 .toList();
     }

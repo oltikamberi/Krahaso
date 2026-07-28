@@ -1,42 +1,58 @@
-import Link from "next/link";
-import { CategoryIcon } from "@/components/category-icon";
-import { Card, CardContent } from "@/components/ui/card";
-import { HomeSearch } from "@/components/home-search";
-import { getCategories } from "@/lib/api";
+import { CategoryNavBar } from "@/components/category-nav-bar";
+import { HomeHero } from "@/components/home-hero";
+import { ProductList } from "@/components/product-list";
+import { StatsStrip } from "@/components/stats-strip";
+import { getProducts } from "@/lib/api";
+import { productsPerPage } from "@/lib/product-grid";
+import type { PageResponse, GroupedProduct } from "@/lib/types";
+
+const EMPTY_PAGE: PageResponse<GroupedProduct> = {
+  items: [],
+  page: 0,
+  totalPages: 0,
+  totalItems: 0,
+};
 
 export default async function HomePage() {
-  const categories = await getCategories();
+  let products = EMPTY_PAGE;
+  const pageSize = productsPerPage("home");
+  const listFilters = { sort: "best", size: String(pageSize) };
+
+  try {
+    products = await getProducts({ page: "0", ...listFilters });
+  } catch {
+    /* API offline */
+  }
 
   return (
-    <div className="flex flex-col items-center gap-12 py-8">
-      <div className="flex max-w-2xl flex-col items-center gap-6 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Gjej çmimin më të mirë në Kosovë
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Krahaso çmimet e produkteve elektronike nga dyqanet online në Kosovë —
-          shpejt, thjesht dhe falas.
-        </p>
-        <HomeSearch />
-      </div>
+    <div>
+      <HomeHero />
+      {/* Phone: categories sit just above the stats/info strip */}
+      <CategoryNavBar className="md:hidden" />
+      <StatsStrip />
 
-      <div className="w-full">
-        <h2 className="mb-4 text-lg font-semibold">Kategoritë</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {categories.map((category) => (
-            <Link key={category.id} href={`/kategoria/${category.slug}`}>
-              <Card className="transition-shadow hover:shadow-md">
-                <CardContent className="flex flex-col items-center gap-3 py-6">
-                  <CategoryIcon
-                    icon={category.icon}
-                    className="h-8 w-8 text-primary"
-                  />
-                  <span className="text-sm font-medium">{category.name}</span>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mb-5 flex items-center gap-2">
+          <span className="font-mono text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <span className="font-semibold" style={{ color: "var(--foreground)" }}>
+              {products.totalItems || products.items.length}
+            </span>{" "}
+            produkte gjenden
+          </span>
         </div>
+
+        {products.items.length > 0 ? (
+          <ProductList initial={products} filters={listFilters} variant="home" />
+        ) : (
+          <div className="py-24 text-center">
+            <p className="mb-1 text-lg font-semibold" style={{ color: "var(--foreground)" }}>
+              Nuk u gjet asnjë produkt
+            </p>
+            <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+              Nis backend-in ose provo përsëri më vonë.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

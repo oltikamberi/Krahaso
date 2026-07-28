@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CompareProvider } from "@/components/compare-context";
-import { CompareBar } from "@/components/compare-bar";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { CategoryNavBar } from "@/components/category-nav-bar";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,12 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Krahaso — Krahaso çmimet në Kosovë",
+  title: "Krahaso Cmimin — Krahaso çmimet në Kosovë",
   description:
     "Krahaso çmimet e produkteve elektronike nga dyqanet online në Kosovë dhe gjej ofertën më të mirë.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -30,20 +31,15 @@ export default function RootLayout({
     <html
       lang="sq"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">
-        <CompareProvider>
+      <body className="flex min-h-full flex-col bg-background text-foreground">
+        <ThemeProvider>
           <SiteHeader />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-8">
-            {children}
-          </main>
-          <footer className="border-t py-6">
-            <p className="mx-auto max-w-6xl px-4 text-sm text-muted-foreground">
-              Krahaso — krahasimi i çmimeve për tregun e Kosovës
-            </p>
-          </footer>
-          <CompareBar />
-        </CompareProvider>
+          <CategoryNavBar className="hidden md:block" />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </ThemeProvider>
       </body>
     </html>
   );

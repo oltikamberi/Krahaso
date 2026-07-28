@@ -1,9 +1,10 @@
 import type {
+  CatalogStats,
   Category,
+  GroupedProduct,
   PageResponse,
   ProductDetail,
   ProductFilters,
-  ProductSummary,
 } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
@@ -22,18 +23,22 @@ export function getCategories(): Promise<Category[]> {
   return get<Category[]>("/api/categories", 300);
 }
 
+export function getCatalogStats(): Promise<CatalogStats> {
+  return get<CatalogStats>("/api/products/stats", 120);
+}
+
 export function getProducts(
   filters: ProductFilters,
-): Promise<PageResponse<ProductSummary>> {
+): Promise<PageResponse<GroupedProduct>> {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
-  return get<PageResponse<ProductSummary>>(`/api/products?${params}`, 60);
+  return get<PageResponse<GroupedProduct>>(`/api/products?${params}`, 30);
 }
 
-export function searchProducts(query: string): Promise<ProductSummary[]> {
-  return get<ProductSummary[]>(
+export function searchProducts(query: string): Promise<GroupedProduct[]> {
+  return get<GroupedProduct[]>(
     `/api/products/search?q=${encodeURIComponent(query)}`,
     30,
   );
