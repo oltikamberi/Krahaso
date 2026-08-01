@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { DealSlider } from "@/components/deal-slider";
+import type { GroupedProduct } from "@/lib/types";
 
-export function HomeHero() {
+export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
@@ -25,74 +27,83 @@ export function HomeHero() {
       className="border-b"
       style={{ backgroundColor: "var(--secondary)", borderColor: "var(--border)" }}
     >
-      <div className="mx-auto max-w-4xl px-4 py-14 text-center">
-        <h1
-          className="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl"
-          style={{ color: "var(--foreground)" }}
-        >
-          Gjej çmimin <span style={{ color: "var(--brand-soft)" }}>më të mirë</span> sot
-        </h1>
-
-        <p
-          className="mx-auto mb-10 max-w-xl text-base"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          Krahaso çmimet nga dyqanet kryesore në Kosovë dhe kurseni para çdo herë që blini.
-        </p>
-
-        <form onSubmit={submit} className="relative mx-auto max-w-2xl">
-          <div
-            className="flex items-center overflow-hidden rounded-lg bg-white"
-            style={{
-              border: "2px solid var(--border)",
-              boxShadow: "0 2px 12px rgba(0,59,113,0.08)",
-            }}
+      <div className="mx-auto grid max-w-7xl items-center gap-5 px-4 py-8 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] md:gap-10 md:py-14 lg:gap-14">
+        <div className="min-w-0 text-left">
+          <h1
+            className="mb-3 max-w-xl text-[1.85rem] font-extrabold leading-tight tracking-tight sm:mb-4 sm:text-5xl md:text-[3.25rem]"
+            style={{ color: "var(--foreground)" }}
           >
-            <Search className="ml-4 h-5 w-5 shrink-0" style={{ color: "var(--brand)" }} />
-            <input
-              type="text"
-              placeholder="Kërko produkt, markë ose kategori..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-4 text-sm outline-none"
-              style={{ color: "var(--foreground)" }}
-              aria-label="Kërko produkte"
-            />
-            <button
-              type="submit"
-              className="m-1.5 shrink-0 rounded px-6 py-2.5 text-sm font-bold transition-colors"
+            Gjej çmimin{" "}
+            <span style={{ color: "var(--brand-soft)" }}>më të mirë</span> sot
+          </h1>
+
+          <p
+            className="mb-5 max-w-lg text-sm leading-relaxed sm:mb-8 sm:text-base"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            Krahaso çmimet nga dyqanet kryesore në Kosovë dhe kurseni para çdo herë që blini.
+          </p>
+
+          <form onSubmit={submit} className="relative max-w-xl">
+            <div
+              className="flex items-center overflow-hidden rounded-lg bg-white"
               style={{
-                backgroundColor: "var(--action)",
-                color: "var(--action-foreground)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--action-hover)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--action)";
+                border: "2px solid var(--border)",
+                boxShadow: "0 2px 12px rgba(0,59,113,0.08)",
               }}
             >
-              Kërko
-            </button>
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-            <span className="font-mono text-xs" style={{ color: "var(--muted-foreground)" }}>
-              Popullar:
-            </span>
-            {["iPhone 15", "Samsung S24", "MacBook", "Sony TV"].map((term) => (
+              <Search className="ml-4 h-5 w-5 shrink-0" style={{ color: "var(--brand)" }} />
+              <input
+                type="text"
+                placeholder="Kërko produkt, markë ose kategori..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="min-w-0 flex-1 bg-transparent px-3 py-4 text-sm outline-none sm:px-4"
+                style={{ color: "var(--foreground)" }}
+                aria-label="Kërko produkte"
+              />
               <button
-                key={term}
-                type="button"
-                onClick={() => popular(term)}
-                className="rounded-full bg-white px-2 py-0.5 text-xs transition-colors hover:opacity-80"
-                style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                type="submit"
+                className="m-1.5 shrink-0 rounded px-4 py-2.5 text-sm font-bold transition-colors sm:px-6"
+                style={{
+                  backgroundColor: "var(--action)",
+                  color: "var(--action-foreground)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--action-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--action)";
+                }}
               >
-                {term}
+                Kërko
               </button>
-            ))}
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs" style={{ color: "var(--muted-foreground)" }}>
+                Popullar:
+              </span>
+              {["iPhone 15", "Samsung S24", "MacBook", "Sony TV"].map((term) => (
+                <button
+                  key={term}
+                  type="button"
+                  onClick={() => popular(term)}
+                  className="rounded-full bg-white px-2 py-0.5 text-xs transition-colors hover:opacity-80"
+                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
+          </form>
+        </div>
+
+        {deals.length > 0 && (
+          <div className="min-w-0 md:justify-self-end md:w-full md:max-w-md">
+            <DealSlider deals={deals} />
           </div>
-        </form>
+        )}
       </div>
     </section>
   );

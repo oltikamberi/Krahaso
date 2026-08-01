@@ -13,20 +13,32 @@ const EMPTY_PAGE: PageResponse<GroupedProduct> = {
   totalItems: 0,
 };
 
+function pickHeroDeals(items: GroupedProduct[], limit = 8): GroupedProduct[] {
+  return items
+    .filter((product) => {
+      const offers = product.offers;
+      if (offers.length < 2) return false;
+      return offers[offers.length - 1].price - offers[0].price >= 10;
+    })
+    .slice(0, limit);
+}
+
 export default async function HomePage() {
   let products = EMPTY_PAGE;
+  let deals: GroupedProduct[] = [];
   const pageSize = productsPerPage("home");
   const listFilters = { sort: "best", size: String(pageSize) };
 
   try {
     products = await getProducts({ page: "0", ...listFilters });
+    deals = pickHeroDeals(products.items);
   } catch {
     /* API offline */
   }
 
   return (
     <div>
-      <HomeHero />
+      <HomeHero deals={deals} />
       {/* Phone: categories sit just above the stats/info strip */}
       <CategoryNavBar className="md:hidden" />
       <StatsStrip />
