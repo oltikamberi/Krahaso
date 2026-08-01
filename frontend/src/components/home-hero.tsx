@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Search, TrendingUp } from "lucide-react";
+import { Search } from "lucide-react";
 
 export function HomeHero() {
   const router = useRouter();
@@ -26,18 +26,6 @@ export function HomeHero() {
       style={{ backgroundColor: "var(--secondary)", borderColor: "var(--border)" }}
     >
       <div className="mx-auto max-w-4xl px-4 py-14 text-center">
-        <div
-          className="mb-6 inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs"
-          style={{
-            backgroundColor: "#ffffff",
-            borderColor: "rgba(0,59,113,0.15)",
-            color: "var(--brand-soft)",
-          }}
-        >
-          <TrendingUp className="h-3 w-3" style={{ color: "var(--action)" }} />
-          Mbi 12,000 produkte nga 18 dyqane në Kosovë
-        </div>
-
         <h1
           className="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl"
           style={{ color: "var(--foreground)" }}
