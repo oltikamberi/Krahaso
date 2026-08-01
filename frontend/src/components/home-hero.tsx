@@ -17,11 +17,6 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
     }
   }
 
-  function popular(term: string) {
-    setQuery(term);
-    router.push(`/kerko?q=${encodeURIComponent(term)}`);
-  }
-
   return (
     <section
       className="border-b"
@@ -78,23 +73,6 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
               >
                 Kërko
               </button>
-            </div>
-
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs" style={{ color: "var(--muted-foreground)" }}>
-                Popullar:
-              </span>
-              {["iPhone 15", "Samsung S24", "MacBook", "Sony TV"].map((term) => (
-                <button
-                  key={term}
-                  type="button"
-                  onClick={() => popular(term)}
-                  className="rounded-full bg-white px-2 py-0.5 text-xs transition-colors hover:opacity-80"
-                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
-                >
-                  {term}
-                </button>
-              ))}
             </div>
           </form>
         </div>
