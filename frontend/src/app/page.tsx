@@ -13,14 +13,31 @@ const EMPTY_PAGE: PageResponse<GroupedProduct> = {
   totalItems: 0,
 };
 
+function savingsAmount(product: GroupedProduct): number {
+  const offers = product.offers;
+  if (offers.length < 2) return 0;
+  return offers[offers.length - 1].price - offers[0].price;
+}
+
+/** Medium–high savings: skip weak deals and extreme top outliers. */
 function pickHeroDeals(items: GroupedProduct[], limit = 8): GroupedProduct[] {
-  return items
-    .filter((product) => {
-      const offers = product.offers;
-      if (offers.length < 2) return false;
-      return offers[offers.length - 1].price - offers[0].price >= 10;
-    })
-    .slice(0, limit);
+  const ranked = [...items]
+    .map((product) => ({ product, savings: savingsAmount(product) }))
+    .filter(({ savings }) => savings >= 15)
+    .sort((a, b) => a.savings - b.savings);
+
+  if (ranked.length === 0) return [];
+
+  // Drop the cheapest ~30% and the most extreme ~15% at the top
+  const dropLow = Math.floor(ranked.length * 0.3);
+  const dropHigh = Math.max(1, Math.floor(ranked.length * 0.15));
+  const band = ranked.slice(dropLow, Math.max(dropLow + 1, ranked.length - dropHigh));
+
+  // Prefer the higher end of that band
+  return band
+    .slice(-limit)
+    .reverse()
+    .map(({ product }) => product);
 }
 
 export default async function HomePage() {

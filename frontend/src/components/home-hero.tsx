@@ -27,7 +27,7 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
       className="border-b"
       style={{ backgroundColor: "var(--secondary)", borderColor: "var(--border)" }}
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-5 px-4 py-8 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] md:gap-10 md:py-14 lg:gap-14">
+      <div className="mx-auto grid max-w-7xl items-center gap-5 px-4 py-8 md:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)] md:gap-8 md:py-14 lg:gap-12">
         <div className="min-w-0 text-left">
           <h1
             className="mb-3 max-w-xl text-[1.85rem] font-extrabold leading-tight tracking-tight sm:mb-4 sm:text-5xl md:text-[3.25rem]"
@@ -100,7 +100,7 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
         </div>
 
         {deals.length > 0 && (
-          <div className="min-w-0 md:justify-self-end md:w-full md:max-w-md">
+          <div className="min-w-0 w-full md:justify-self-stretch">
             <DealSlider deals={deals} />
           </div>
         )}
