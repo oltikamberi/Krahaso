@@ -28,13 +28,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           </h1>
           <p className="mt-1 font-mono text-sm" style={{ color: "var(--muted-foreground)" }}>
             {query ? (
-              <>
-                &quot;{query}&quot; —{" "}
-                <span className="font-semibold" style={{ color: "var(--foreground)" }}>
-                  {products.length}
-                </span>{" "}
-                produkte gjenden
-              </>
+              <>&quot;{query}&quot;</>
             ) : (
               "Shkruaj diçka për të kërkuar"
             )}

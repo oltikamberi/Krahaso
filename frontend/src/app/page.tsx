@@ -84,15 +84,6 @@ export default async function HomePage() {
       <SponsoredSection products={sponsored} />
 
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-5 flex items-center gap-2">
-          <span className="font-mono text-sm" style={{ color: "var(--muted-foreground)" }}>
-            <span className="font-semibold" style={{ color: "var(--foreground)" }}>
-              {products.totalItems || products.items.length}
-            </span>{" "}
-            produkte gjenden
-          </span>
-        </div>
-
         {products.items.length > 0 ? (
           <ProductList initial={products} filters={listFilters} variant="home" />
         ) : (

@@ -58,12 +58,6 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: "var(--foreground)" }}>
               {category?.name ?? slug}
             </h1>
-            <p className="mt-1 font-mono text-sm" style={{ color: "var(--muted-foreground)" }}>
-              <span className="font-semibold" style={{ color: "var(--foreground)" }}>
-                {products.totalItems}
-              </span>{" "}
-              produkte gjenden
-            </p>
           </div>
           <Suspense>
             <MobileFilters />
