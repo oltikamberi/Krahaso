@@ -114,7 +114,7 @@ export default async function ProductPage({ params }: PageProps) {
               </span>
             </div>
             {savings >= 10 && (
-              <span className="mb-1 text-sm font-semibold" style={{ color: "var(--savings)" }}>
+              <span className="mb-1 text-lg font-bold" style={{ color: "var(--savings)" }}>
                 Kurseni deri {formatPrice(savings, product.currency)}
               </span>
             )}
