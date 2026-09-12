@@ -35,6 +35,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/seller/register", "/api/seller/login").permitAll()
+                        // Webhooks carry their own API key and signature instead of a
+                        // session token, so they must not require the bearer filter
+                        .requestMatchers("/api/webhooks/**").permitAll()
                         .requestMatchers("/api/seller/**").authenticated()
                         .anyRequest().permitAll())
                 .exceptionHandling(handling -> handling

@@ -16,6 +16,9 @@ public interface SellerFeedRepository extends JpaRepository<SellerFeed, Long> {
 
     Optional<SellerFeed> findFirstBySellerIdAndTypeOrderByIdAsc(Long sellerId, String type);
 
+    /** Authenticates a webhook call; the key is only ever stored hashed. */
+    Optional<SellerFeed> findByApiKeyHash(String apiKeyHash);
+
     /** Feeds whose next scheduled poll has come due. A null next poll means never polled. */
     @Query("""
             SELECT feed FROM SellerFeed feed

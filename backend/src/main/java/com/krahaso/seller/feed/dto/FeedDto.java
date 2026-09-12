@@ -22,5 +22,7 @@ public record FeedDto(
         Long pendingSyncId,
         Instant nextPollAt,
         Instant lastAttemptAt,
-        int consecutiveFailures) implements Serializable {
+        int consecutiveFailures,
+        /** Recognisable head of the API key; the key itself is never returned. */
+        String apiKeyPrefix) implements Serializable {
 }

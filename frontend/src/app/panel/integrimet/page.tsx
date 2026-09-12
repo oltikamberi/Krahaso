@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { KeyRound, Link2, Upload } from "lucide-react";
+import { FeedApiKeyCard } from "@/components/feed-api-key-card";
 import { FeedStatusCard } from "@/components/feed-status-card";
 import { FeedUploadCard } from "@/components/feed-upload-card";
 import { FeedUrlCard } from "@/components/feed-url-card";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default async function PanelIntegrationsPage() {
   const feeds = await getFeeds();
   const urlFeed = feeds.find((feed) => feed.type === "url");
+  const apiFeed = feeds.find((feed) => feed.type === "api");
 
   return (
     <div className="space-y-6">
@@ -75,75 +77,29 @@ export default async function PanelIntegrationsPage() {
           <FeedUrlCard feed={urlFeed} />
         </section>
 
-        <ComingSoonCard
-          icon={<KeyRound className="h-4 w-4" style={{ color: "var(--muted-foreground)" }} />}
-          title="API Key"
-          subtitle="Përditësime në kohë reale"
-          description="Dërgo çmime dhe stok direkt nga sistemi i tij përmes një webhook-u të sigurt."
-        />
+        <section
+          className="rounded-xl p-5"
+          style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+        >
+          <header className="mb-4 flex items-center gap-2.5">
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-xl"
+              style={{ backgroundColor: "var(--secondary)" }}
+            >
+              <KeyRound className="h-4 w-4" style={{ color: "var(--brand-soft)" }} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
+                API Key
+              </h3>
+              <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+                Përditësime në kohë reale
+              </p>
+            </div>
+          </header>
+          <FeedApiKeyCard feed={apiFeed} />
+        </section>
       </div>
     </div>
-  );
-}
-
-function ComingSoonCard({
-  icon,
-  title,
-  subtitle,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  description: string;
-}) {
-  return (
-    <section
-      aria-disabled
-      className="rounded-xl p-5"
-      style={{
-        backgroundColor: "var(--card)",
-        border: "1px solid var(--border)",
-        opacity: 0.6,
-      }}
-    >
-      <header className="mb-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-xl"
-            style={{ backgroundColor: "var(--secondary)" }}
-          >
-            {icon}
-          </div>
-          <div>
-            <h3 className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
-              {title}
-            </h3>
-            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-              {subtitle}
-            </p>
-          </div>
-        </div>
-        <span
-          className="rounded px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider"
-          style={{ backgroundColor: "var(--secondary)", color: "var(--muted-foreground)" }}
-        >
-          Së shpejti
-        </span>
-      </header>
-
-      <p className="text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
-        {description}
-      </p>
-
-      <button
-        type="button"
-        disabled
-        className="mt-4 w-full cursor-not-allowed rounded-lg px-4 py-2 text-sm font-bold"
-        style={{ backgroundColor: "var(--secondary)", color: "var(--muted-foreground)" }}
-      >
-        Nuk është aktiv
-      </button>
-    </section>
   );
 }

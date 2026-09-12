@@ -343,7 +343,8 @@ public class FeedService {
                 pendingSyncId,
                 feed.getNextPollAt(),
                 feed.getLastAttemptAt(),
-                feed.getConsecutiveFailures());
+                feed.getConsecutiveFailures(),
+                feed.getApiKeyPrefix());
     }
 
     /** Only live feeds go stale — a draft has simply never synced. */

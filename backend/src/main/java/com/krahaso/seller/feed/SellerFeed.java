@@ -35,6 +35,12 @@ public class SellerFeed {
     @Column(name = "api_key_hash")
     private String apiKeyHash;
 
+    @Column(name = "api_key_prefix")
+    private String apiKeyPrefix;
+
+    @Column(name = "api_signing_secret")
+    private String apiSigningSecret;
+
     private String status;
 
     @Column(name = "last_synced_at")
@@ -143,6 +149,22 @@ public class SellerFeed {
 
     public void setLastStatus(String lastStatus) {
         this.lastStatus = lastStatus;
+    }
+
+    public String getApiKeyPrefix() {
+        return apiKeyPrefix;
+    }
+
+    public void setApiKeyPrefix(String apiKeyPrefix) {
+        this.apiKeyPrefix = apiKeyPrefix;
+    }
+
+    public String getApiSigningSecret() {
+        return apiSigningSecret;
+    }
+
+    public void setApiSigningSecret(String apiSigningSecret) {
+        this.apiSigningSecret = apiSigningSecret;
     }
 
     public Instant getNextPollAt() {

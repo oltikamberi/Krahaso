@@ -6,6 +6,8 @@ import com.krahaso.seller.feed.dto.FeedRowDto;
 import com.krahaso.seller.feed.dto.FeedSyncDto;
 import com.krahaso.seller.feed.dto.FeedUploadResponse;
 import com.krahaso.seller.feed.dto.FeedUrlRequest;
+import com.krahaso.seller.feed.dto.ApiKeyResponse;
+import com.krahaso.seller.feed.webhook.ApiKeyService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +32,15 @@ public class FeedController {
 
     private final FeedService feedService;
     private final FeedPollingService pollingService;
+    private final ApiKeyService apiKeyService;
 
-    public FeedController(FeedService feedService, FeedPollingService pollingService) {
+    public FeedController(
+            FeedService feedService,
+            FeedPollingService pollingService,
+            ApiKeyService apiKeyService) {
         this.feedService = feedService;
         this.pollingService = pollingService;
+        this.apiKeyService = apiKeyService;
     }
 
     public record PageResponse<T>(List<T> items, int page, int totalPages, long totalItems)
@@ -43,6 +50,12 @@ public class FeedController {
     @GetMapping
     public List<FeedDto> list(@AuthenticationPrincipal SellerPrincipal principal) {
         return feedService.listFeeds(principal.sellerId());
+    }
+
+    /** Issues a new key pair, invalidating any previous one. Shown to the seller once. */
+    @PostMapping("/api-key")
+    public ApiKeyResponse generateApiKey(@AuthenticationPrincipal SellerPrincipal principal) {
+        return apiKeyService.generate(principal.sellerId());
     }
 
     @PostMapping("/url")

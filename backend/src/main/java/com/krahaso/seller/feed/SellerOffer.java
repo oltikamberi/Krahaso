@@ -64,6 +64,10 @@ public class SellerOffer {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    /** Event time of the last webhook update, used to reject out-of-order calls. */
+    @Column(name = "last_event_at")
+    private Instant lastEventAt;
+
     public Long getId() {
         return id;
     }
@@ -194,5 +198,13 @@ public class SellerOffer {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Instant getLastEventAt() {
+        return lastEventAt;
+    }
+
+    public void setLastEventAt(Instant lastEventAt) {
+        this.lastEventAt = lastEventAt;
     }
 }

@@ -45,6 +45,15 @@ export interface Feed {
   nextPollAt: string | null;
   lastAttemptAt: string | null;
   consecutiveFailures: number;
+  apiKeyPrefix: string | null;
+}
+
+/** Returned only at the moment a key is generated, never afterwards. */
+export interface ApiKeyCredentials {
+  feedId: number;
+  apiKey: string;
+  signingSecret: string;
+  webhookUrl: string;
 }
 
 export interface FeedSync {
