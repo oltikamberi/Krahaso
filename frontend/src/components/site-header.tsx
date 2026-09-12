@@ -72,10 +72,14 @@ export function SiteHeader() {
                 <Moon className="h-4 w-4 text-white" />
               )}
             </button>
-            <button className="hidden text-sm font-medium text-white/80 transition-colors hover:text-white sm:block">
+            <Link
+              href="/hyrje"
+              className="hidden text-sm font-medium text-white/80 transition-colors hover:text-white sm:block"
+            >
               Hyrje
-            </button>
-            <button
+            </Link>
+            <Link
+              href="/regjistrohu"
               className="rounded px-4 py-2 text-sm font-bold transition-colors"
               style={{
                 backgroundColor: "var(--action)",
@@ -89,7 +93,7 @@ export function SiteHeader() {
               }}
             >
               Regjistrohu
-            </button>
+            </Link>
           </div>
         </div>
       </header>
