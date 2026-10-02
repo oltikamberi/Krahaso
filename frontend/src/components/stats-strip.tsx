@@ -12,7 +12,7 @@ export function StatsStrip() {
           className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] sm:text-xs"
           style={{ color: "var(--brand)" }}
         >
-          Krahaso · Shiko · Kurse · Fito
+          Shiko · Krahaso · Kurse · Fito
         </p>
       </div>
     </div>
