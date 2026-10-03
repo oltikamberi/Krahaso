@@ -102,6 +102,7 @@ public class FeedPollingService {
         // can check their columns map correctly. After that, polls publish on their own.
         boolean publishedBefore = syncLogRepository.existsByFeedIdAndState(feed.getId(), "applied");
         if (publishedBefore) {
+            // confirm() already calls catalogSyncService internally, so no extra call needed
             feedService.confirm(feed.getSellerId(), feed.getId(), parsed.getId());
         }
 

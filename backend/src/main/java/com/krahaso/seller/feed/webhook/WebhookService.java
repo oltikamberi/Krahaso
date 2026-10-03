@@ -6,6 +6,7 @@ import com.krahaso.category.CategoryRepository;
 import com.krahaso.seller.feed.FeedSyncLog;
 import com.krahaso.seller.feed.FeedSyncLogRepository;
 import com.krahaso.seller.feed.SellerFeed;
+import com.krahaso.seller.feed.SellerCatalogSyncService;
 import com.krahaso.seller.feed.SellerFeedRepository;
 import com.krahaso.seller.feed.SellerOffer;
 import com.krahaso.seller.feed.SellerOfferRepository;
@@ -42,6 +43,7 @@ public class WebhookService {
     private final FeedSyncLogRepository syncLogRepository;
     private final CategoryMatcher categoryMatcher;
     private final CategoryRepository categoryRepository;
+    private final SellerCatalogSyncService catalogSyncService;
 
     public WebhookService(
             ObjectMapper objectMapper,
@@ -51,7 +53,8 @@ public class WebhookService {
             SellerOfferRepository offerRepository,
             FeedSyncLogRepository syncLogRepository,
             CategoryMatcher categoryMatcher,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository,
+            SellerCatalogSyncService catalogSyncService) {
         this.objectMapper = objectMapper;
         this.signature = signature;
         this.eventRepository = eventRepository;
@@ -60,6 +63,7 @@ public class WebhookService {
         this.syncLogRepository = syncLogRepository;
         this.categoryMatcher = categoryMatcher;
         this.categoryRepository = categoryRepository;
+        this.catalogSyncService = catalogSyncService;
     }
 
     @Transactional
@@ -80,7 +84,10 @@ public class WebhookService {
         event.setEventId(request.eventId());
         eventRepository.save(event);
 
-        return apply(feed, request);
+        WebhookResponse response = apply(feed, request);
+        // Push updated offers straight to the public catalog
+        catalogSyncService.syncToPublicCatalog(feed.getSellerId());
+        return response;
     }
 
     /** The key is compared by hash, so a database leak yields no usable keys. */

@@ -8,6 +8,8 @@ public interface SellerOfferRepository extends JpaRepository<SellerOffer, Long> 
 
     List<SellerOffer> findByFeedId(Long feedId);
 
+    List<SellerOffer> findBySellerId(Long sellerId);
+
     /** Webhook updates address products by SKU across every feed the seller owns. */
     List<SellerOffer> findBySellerIdAndSku(Long sellerId, String sku);
 

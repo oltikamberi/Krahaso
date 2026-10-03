@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     List<Product> findByMatchKey(String matchKey);
+
+    Optional<Product> findByProviderIdAndProductUrl(Long providerId, String productUrl);
 
     /**
      * Full-text search over the generated search_vector column, with an ILIKE

@@ -126,4 +126,52 @@ public class Product {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public void setCurrentPrice(BigDecimal currentPrice) {
+        this.currentPrice = currentPrice;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setInStock(boolean inStock) {
+        this.inStock = inStock;
+    }
+
+    public void setSpecs(Map<String, Object> specs) {
+        this.specs = specs;
+    }
+
+    public void setMatchKey(String matchKey) {
+        this.matchKey = matchKey;
+    }
 }

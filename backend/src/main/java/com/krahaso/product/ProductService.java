@@ -81,8 +81,12 @@ public class ProductService {
         for (List<Product> bucket : byKey.values()) {
             for (List<Product> cluster : ProductMatching.partitionCompatible(bucket)) {
                 GroupedProductDto card = toGrouped(cluster);
-                if (card.offerCount() < 2) {
-                    continue; // hide single-retailer products
+                // Always show products from registered sellers, even if only one store
+                // carries them. Hide scraped single-retailer products (nothing to compare).
+                boolean hasSeller = cluster.stream()
+                        .anyMatch(p -> p.getProvider().getSlug().startsWith("seller-"));
+                if (card.offerCount() < 2 && !hasSeller) {
+                    continue;
                 }
                 grouped.add(card);
             }
@@ -236,7 +240,9 @@ public class ProductService {
         for (List<Product> bucket : byKey.values()) {
             for (List<Product> cluster : ProductMatching.partitionCompatible(bucket)) {
                 GroupedProductDto card = toGrouped(cluster);
-                if (card.offerCount() < 2) {
+                boolean hasSeller = cluster.stream()
+                        .anyMatch(p -> p.getProvider().getSlug().startsWith("seller-"));
+                if (card.offerCount() < 2 && !hasSeller) {
                     continue;
                 }
                 grouped.add(card);

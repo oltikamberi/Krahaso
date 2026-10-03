@@ -33,6 +33,9 @@ public class Seller {
 
     private boolean verified;
 
+    @Column(name = "provider_id")
+    private Long providerId;
+
     // Defaults come from the database, so read them back after insert
     @Generated(event = EventType.INSERT)
     @Column(name = "created_at", insertable = false, updatable = false)
@@ -84,6 +87,14 @@ public class Seller {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public Long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
     }
 
     public Instant getCreatedAt() {

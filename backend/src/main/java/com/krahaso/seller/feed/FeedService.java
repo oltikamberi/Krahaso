@@ -42,6 +42,7 @@ public class FeedService {
     private final FeedStagingRowRepository stagingRowRepository;
     private final SellerOfferRepository offerRepository;
     private final CategoryRepository categoryRepository;
+    private final SellerCatalogSyncService catalogSyncService;
     private final Duration staleAfter;
     private final long maxUploadBytes;
     private final int defaultScheduleMinutes;
@@ -54,6 +55,7 @@ public class FeedService {
             FeedStagingRowRepository stagingRowRepository,
             SellerOfferRepository offerRepository,
             CategoryRepository categoryRepository,
+            SellerCatalogSyncService catalogSyncService,
             @Value("${krahaso.feed.stale-after}") Duration staleAfter,
             @Value("${krahaso.feed.max-upload-bytes}") long maxUploadBytes,
             @Value("${krahaso.feed.default-schedule-minutes}") int defaultScheduleMinutes) {
@@ -64,6 +66,7 @@ public class FeedService {
         this.stagingRowRepository = stagingRowRepository;
         this.offerRepository = offerRepository;
         this.categoryRepository = categoryRepository;
+        this.catalogSyncService = catalogSyncService;
         this.staleAfter = staleAfter;
         this.maxUploadBytes = maxUploadBytes;
         this.defaultScheduleMinutes = defaultScheduleMinutes;
@@ -227,6 +230,9 @@ public class FeedService {
 
         // Staged rows have become offers; the counts live on in the sync log
         stagingRowRepository.deleteBySyncId(syncId);
+
+        // Promote to the public catalog so the comparison pages see the new prices
+        catalogSyncService.syncToPublicCatalog(sellerId);
 
         return toDto(feed);
     }

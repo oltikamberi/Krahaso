@@ -107,7 +107,9 @@ export default async function ProductPage({ params }: PageProps) {
           <div className="flex flex-wrap items-end gap-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-wider" style={{ color: "var(--muted-foreground)" }}>
-                Nga {offers.length} dyqane · më i liri
+                {offers.length > 1
+                  ? `Nga ${offers.length} dyqane · më i liri`
+                  : `1 dyqan`}
               </p>
               <span className="font-mono text-3xl font-extrabold" style={{ color: "var(--price-highlight)" }}>
                 {formatPrice(cheapest.price, product.currency)}

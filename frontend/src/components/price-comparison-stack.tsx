@@ -11,12 +11,13 @@ interface Props {
 
 /** Renders a cheapest-first stack of retailer offers for a product. */
 export function PriceComparisonStack({ offers, currency }: Props) {
-  if (offers.length < 2) return null;
+  if (offers.length === 0) return null;
 
   const sorted = [...offers].sort((a, b) => a.price - b.price);
   const cheapest = sorted[0];
-  const savings = sorted[sorted.length - 1].price - cheapest.price;
+  const savings = sorted.length > 1 ? sorted[sorted.length - 1].price - cheapest.price : 0;
   const highlightSavings = savings >= 10;
+  const isComparison = sorted.length > 1;
 
   return (
     <div className="flex flex-col gap-3">
@@ -24,7 +25,9 @@ export function PriceComparisonStack({ offers, currency }: Props) {
         <div className="flex items-center gap-2">
           <TrendingDown className="h-4 w-4" style={{ color: "var(--brand)" }} />
           <h3 className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
-            Krahaso çmimet ({sorted.length} dyqane)
+            {isComparison
+              ? `Krahaso çmimet (${sorted.length} dyqane)`
+              : "Disponueshmëria"}
           </h3>
         </div>
         {highlightSavings && (
@@ -49,19 +52,21 @@ export function PriceComparisonStack({ offers, currency }: Props) {
               }}
             >
               <div className="flex items-center gap-2.5">
-                <span
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
-                  style={{
-                    backgroundColor: isHighlighted ? "var(--deal)" : "var(--border)",
-                    color: isHighlighted ? "var(--deal-foreground)" : "var(--muted-foreground)",
-                  }}
-                >
-                  {i + 1}
-                </span>
+                {isComparison && (
+                  <span
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
+                    style={{
+                      backgroundColor: isHighlighted ? "var(--deal)" : "var(--border)",
+                      color: isHighlighted ? "var(--deal-foreground)" : "var(--muted-foreground)",
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                )}
                 <span className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>
                   {listing.providerName}
                 </span>
-                {isHighlighted && (
+                {isHighlighted && isComparison && (
                   <span
                     className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
                     style={{
