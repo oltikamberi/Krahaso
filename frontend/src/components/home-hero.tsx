@@ -50,7 +50,7 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
               <Search className="ml-4 h-5 w-5 shrink-0" style={{ color: "var(--brand)" }} />
               <input
                 type="text"
-                placeholder="Kërko produkt, markë ose kategori"
+                placeholder="Kërko produkte"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="min-w-0 flex-1 bg-transparent px-3 py-4 text-sm outline-none sm:px-4"
