@@ -35,11 +35,12 @@ function SponsoredCard({ product }: { product: GroupedProduct }) {
   return (
     <Link
       href={detailId ? `/produkti/${detailId}` : "#"}
-      className="group flex min-w-[160px] flex-1 flex-col overflow-hidden rounded-lg bg-white transition-shadow hover:shadow-md sm:min-w-0"
+      className="group flex w-[164px] shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white transition-shadow hover:shadow-md sm:w-auto sm:flex-1 sm:snap-none"
       style={{ border: "1px solid var(--border)" }}
     >
+      {/* Fixed-height image box keeps every card the same height in the scroller */}
       <div
-        className="relative flex aspect-[4/3] items-center justify-center bg-[var(--secondary)]"
+        className="relative flex h-[124px] items-center justify-center bg-[var(--secondary)] sm:h-auto sm:aspect-[4/3]"
       >
         <span
           className="absolute left-2 top-2 z-10 rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
@@ -56,7 +57,7 @@ function SponsoredCard({ product }: { product: GroupedProduct }) {
             src={imageUrl}
             alt={product.name}
             referrerPolicy="no-referrer"
-            className="h-full w-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
             onError={() => setImageFailed(true)}
           />
         ) : (
@@ -68,8 +69,9 @@ function SponsoredCard({ product }: { product: GroupedProduct }) {
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
+        {/* Reserve two lines so short names don't shrink the card */}
         <p
-          className="line-clamp-2 text-[13px] font-semibold leading-snug"
+          className="line-clamp-2 min-h-[2.6em] text-[13px] font-semibold leading-snug"
           style={{ color: "var(--foreground)" }}
         >
           {product.name}
@@ -104,14 +106,17 @@ export function SponsoredSection({ products }: { products: GroupedProduct[] }) {
       aria-label="Produkte të sponsorizuara"
     >
       <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-2">
           <div>
-            <p
-              className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em]"
-              style={{ color: "var(--muted-foreground)" }}
+            <span
+              className="mb-1.5 inline-block rounded px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"
+              style={{
+                backgroundColor: "var(--deal)",
+                color: "var(--deal-foreground)",
+              }}
             >
               Sponsorizuar
-            </p>
+            </span>
             <h2
               className="text-lg font-bold tracking-tight sm:text-xl"
               style={{ color: "var(--foreground)" }}
@@ -120,14 +125,16 @@ export function SponsoredSection({ products }: { products: GroupedProduct[] }) {
             </h2>
           </div>
           <p
-            className="max-w-xs text-right text-xs leading-relaxed"
+            className="text-xs leading-relaxed sm:max-w-xs sm:text-right"
             style={{ color: "var(--muted-foreground)" }}
           >
             Produkte të promovuara nga partnerët — të etiketuar qartë.
           </p>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible md:grid-cols-4 sm:pb-0">
+        {/* Phone: edge-to-edge snap scroller; the negative margin lets the first
+            card align with the heading while the row still bleeds off-screen. */}
+        <div className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4">
           {products.map((product) => (
             <SponsoredCard key={product.matchKey} product={product} />
           ))}

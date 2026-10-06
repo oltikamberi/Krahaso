@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useMotionValue } from "motion/react";
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
@@ -93,33 +93,25 @@ export default function FramerCarousel({
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
+
+  // Animate the slide index and translate by percentage. Translating by pixels
+  // measured with offsetWidth drifts by a fraction of a pixel per slide (the
+  // real width is fractional, offsetWidth is rounded), so later slides end up a
+  // few pixels off and the neighbouring slide bleeds in at the edge.
+  const progress = useMotionValue(0);
+  const x = useTransform(progress, (value) => `${-value * 100}%`);
 
   const count = slides.length;
 
   useEffect(() => {
-    if (!containerRef.current || count === 0) return;
-    const containerWidth = containerRef.current.offsetWidth || 1;
-    const targetX = -index * containerWidth;
-
-    animate(x, targetX, {
+    if (count === 0) return;
+    const controls = animate(progress, index, {
       type: "spring",
       stiffness: 300,
       damping: 30,
     });
-  }, [index, x, count]);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const onResize = () => {
-      const containerWidth = containerRef.current?.offsetWidth || 1;
-      x.set(-index * containerWidth);
-    };
-
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [index, x]);
+    return () => controls.stop();
+  }, [index, progress, count]);
 
   const goTo = useEffectEvent((next: number) => {
     if (count === 0) return;
@@ -165,7 +157,9 @@ export default function FramerCarousel({
                     src={item.url}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    className="h-full w-full select-none bg-[var(--secondary)] object-contain p-6 pointer-events-none sm:p-8"
+                    // White, not --secondary: retailer photos ship on white, so any other
+                    // colour shows the photo's edge as a rectangle around the product
+                    className="h-full w-full select-none bg-white object-contain p-6 pointer-events-none sm:p-8"
                     draggable={false}
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-16 text-white">

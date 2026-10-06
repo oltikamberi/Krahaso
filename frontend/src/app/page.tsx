@@ -83,9 +83,22 @@ export default async function HomePage() {
       <StatsStrip />
       <SponsoredSection products={sponsored} />
 
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
         {products.items.length > 0 ? (
-          <ProductList initial={products} filters={listFilters} variant="home" />
+          <>
+            <div className="mb-4 sm:mb-6">
+              <h2
+                className="text-lg font-bold tracking-tight sm:text-xl"
+                style={{ color: "var(--foreground)" }}
+              >
+                Krahaso produktet
+              </h2>
+              <p className="mt-0.5 text-xs sm:text-sm" style={{ color: "var(--muted-foreground)" }}>
+                Çmimet më të mira nga dyqanet në Kosovë, renditur sipas kursimit.
+              </p>
+            </div>
+            <ProductList initial={products} filters={listFilters} variant="home" />
+          </>
         ) : (
           <div className="py-24 text-center">
             <p className="mb-1 text-lg font-semibold" style={{ color: "var(--foreground)" }}>
