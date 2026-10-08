@@ -13,6 +13,20 @@ async function get<T>(path: string, revalidateSeconds = 60): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     next: { revalidate: revalidateSeconds },
   });
+  return readJson(res, path);
+}
+
+/**
+ * Search and the product page. These stay uncached: a webhook writes the new
+ * price straight away, and the next load of the public page has to show it.
+ * Listing pages keep the short revalidate in {@link get}.
+ */
+async function getFresh<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, { cache: "no-store" });
+  return readJson(res, path);
+}
+
+async function readJson<T>(res: Response, path: string): Promise<T> {
   if (!res.ok) {
     throw new Error(`API error ${res.status} for ${path}`);
   }
@@ -38,14 +52,13 @@ export function getProducts(
 }
 
 export function searchProducts(query: string): Promise<GroupedProduct[]> {
-  return get<GroupedProduct[]>(
+  return getFresh<GroupedProduct[]>(
     `/api/products/search?q=${encodeURIComponent(query)}`,
-    30,
   );
 }
 
 export function getProduct(id: number | string): Promise<ProductDetail> {
-  return get<ProductDetail>(`/api/products/${id}`, 60);
+  return getFresh<ProductDetail>(`/api/products/${id}`);
 }
 
 export function compareProducts(ids: string[]): Promise<ProductDetail[]> {

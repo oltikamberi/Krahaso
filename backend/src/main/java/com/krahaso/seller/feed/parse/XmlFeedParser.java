@@ -66,15 +66,34 @@ public class XmlFeedParser implements FeedParser {
 
     /**
      * The product element is the most frequently repeated element that itself has
-     * child elements holding text.
+     * child elements holding text. On a tie the shallower element wins: children
+     * are registered before their parent, so a nested wrapper present on every
+     * product (a {@code <pricing>} inside each {@code <product>}) would otherwise
+     * be chosen and every row would come back without a name.
      */
     private List<Element> findRecordElements(Document document) {
         Map<String, List<Element>> byName = new LinkedHashMap<>();
         collect(document.getDocumentElement(), byName);
 
         return byName.values().stream()
-                .max((left, right) -> Integer.compare(left.size(), right.size()))
+                .max((left, right) -> {
+                    int byCount = Integer.compare(left.size(), right.size());
+                    if (byCount != 0) {
+                        return byCount;
+                    }
+                    return Integer.compare(depth(right.get(0)), depth(left.get(0)));
+                })
                 .orElseGet(List::of);
+    }
+
+    private int depth(Element element) {
+        int depth = 0;
+        Node parent = element.getParentNode();
+        while (parent instanceof Element) {
+            depth++;
+            parent = parent.getParentNode();
+        }
+        return depth;
     }
 
     private void collect(Element element, Map<String, List<Element>> byName) {

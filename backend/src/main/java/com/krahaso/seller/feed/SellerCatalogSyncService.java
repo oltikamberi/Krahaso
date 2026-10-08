@@ -10,6 +10,8 @@ import com.krahaso.seller.Seller;
 import com.krahaso.seller.SellerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,18 +42,21 @@ public class SellerCatalogSyncService {
     private final ProviderRepository providerRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CacheManager cacheManager;
 
     public SellerCatalogSyncService(
             SellerRepository sellerRepository,
             SellerOfferRepository offerRepository,
             ProviderRepository providerRepository,
             ProductRepository productRepository,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository,
+            CacheManager cacheManager) {
         this.sellerRepository = sellerRepository;
         this.offerRepository = offerRepository;
         this.providerRepository = providerRepository;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional
@@ -78,6 +83,14 @@ public class SellerCatalogSyncService {
                 log.warn("Could not sync offer {} (seller {}) to public catalog: {}",
                         offer.getId(), sellerId, unexpected.getMessage());
             }
+        }
+
+        // Product pages are cached for 5 minutes, and a grouped page is cached
+        // under every sibling's id. Drop the whole detail cache so the price a
+        // buyer sees matches what was just published.
+        Cache productDetail = cacheManager.getCache("productDetail");
+        if (productDetail != null) {
+            productDetail.clear();
         }
 
         log.info("Synced {} offers for seller {} ({}) to public catalog",

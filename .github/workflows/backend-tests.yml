@@ -1,0 +1,56 @@
+# Runs the backend suite (parser unit tests plus the Testcontainers
+# integration tests) on every push and pull request that touches the backend.
+# The runner's Docker daemon is what Testcontainers uses to start Postgres,
+# Redis and MinIO — nothing in this file has to provision them.
+
+name: Backend tests
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-tests.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-tests.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: backend-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: JUnit + Testcontainers
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # A push to this repo already runs the suite. The pull_request event only
+    # adds coverage for forks, where that push never happens.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      - name: Run tests
+        working-directory: backend
+        run: ./mvnw -B test
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: backend/target/surefire-reports
+          if-no-files-found: ignore

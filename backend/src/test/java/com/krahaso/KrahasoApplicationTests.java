@@ -1,10 +1,9 @@
 package com.krahaso;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class KrahasoApplicationTests {
+/** Boots the full context (and runs every Flyway migration) against real services. */
+class KrahasoApplicationTests extends IntegrationTestBase {
 
 	@Test
 	void contextLoads() {

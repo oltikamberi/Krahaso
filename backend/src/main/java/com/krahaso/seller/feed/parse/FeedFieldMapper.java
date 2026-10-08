@@ -138,16 +138,19 @@ public final class FeedFieldMapper {
         int lastDot = digits.lastIndexOf('.');
 
         String normalized;
-        if (lastComma > lastDot) {
-            normalized = digits.replace(".", "").replace(',', '.');
-        } else if (lastDot > lastComma) {
-            normalized = digits.replace(",", "");
-        } else if (lastComma >= 0) {
-            // Only commas present — a 1-2 digit tail means it is the decimal separator
+        if (lastComma >= 0 && lastDot < 0) {
+            // Only commas. Checked first: with no dot, lastComma > lastDot is
+            // always true, so this case used to fall into the branch below and
+            // "1,234" was read as 1.23. A 1-2 digit tail is the decimal
+            // separator ("12,50"); a longer tail is a thousands separator.
             int tail = digits.length() - lastComma - 1;
             normalized = tail > 0 && tail <= 2
                     ? digits.substring(0, lastComma) + "." + digits.substring(lastComma + 1)
                     : digits.replace(",", "");
+        } else if (lastComma > lastDot) {
+            normalized = digits.replace(".", "").replace(',', '.');
+        } else if (lastDot > lastComma) {
+            normalized = digits.replace(",", "");
         } else {
             normalized = digits;
         }
