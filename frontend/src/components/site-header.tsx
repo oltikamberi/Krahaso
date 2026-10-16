@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { TrendingUp, Moon, Sun, Zap, Shield, Truck } from "lucide-react";
+import { TrendingUp, Moon, Sun, Zap, Shield, Truck, HeartHandshake } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { SUPPORT_POPUP_EVENT } from "@/components/support-popup";
 
 export function SiteHeader() {
   const { theme, toggle } = useTheme();
@@ -57,6 +58,22 @@ export function SiteHeader() {
           </Link>
 
           <div className="flex items-center gap-3">
+            {/* TEMP: preview toggle for the support popup — remove when the design is settled */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(SUPPORT_POPUP_EVENT))}
+              aria-label="Hap popup-in e mbështetjes"
+              title="Preview popup (temp)"
+              className="flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold transition-all hover:scale-105 sm:px-3"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.22)",
+                color: "var(--deal)",
+              }}
+            >
+              <HeartHandshake className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Popup</span>
+            </button>
             <button
               onClick={toggle}
               aria-label={isDark ? "Tema e çelët" : "Tema e errët"}
@@ -76,7 +93,7 @@ export function SiteHeader() {
               href="/hyrje"
               className="hidden text-sm font-medium text-white/80 transition-colors hover:text-white sm:block"
             >
-              Hyrje
+              Kyçu
             </Link>
             <Link
               href="/regjistrohu"

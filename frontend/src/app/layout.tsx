@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CategoryNavBar } from "@/components/category-nav-bar";
+import { SupportPopup } from "@/components/support-popup";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
@@ -39,6 +40,7 @@ export default async function RootLayout({
           <CategoryNavBar className="hidden md:block" />
           <main className="flex-1">{children}</main>
           <SiteFooter />
+          <SupportPopup />
         </ThemeProvider>
       </body>
     </html>

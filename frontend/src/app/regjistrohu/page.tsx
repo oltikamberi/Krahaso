@@ -5,7 +5,7 @@ import { SellerRegisterForm } from "@/components/seller-register-form";
 import { getSeller } from "@/lib/seller-api";
 
 export const metadata: Metadata = {
-  title: "Regjistro biznesin — Krahaso Cmimin",
+  title: "Regjistro biznesin tënd  — Krahaso Cmimin",
   description: "Regjistro dyqanin tënd dhe listo produktet në Krahaso Cmimin.",
 };
 
@@ -27,10 +27,12 @@ export default async function RegisterPage() {
           className="text-2xl font-extrabold tracking-tight"
           style={{ color: "var(--foreground)" }}
         >
-          Regjistro biznesin
+          Regjistro biznesin tënd   <br />
+          Listo produktet e tua  <br />
+          dhe arrij blerësit në Kosovë <br />
         </h1>
         <p className="mt-2 text-sm" style={{ color: "var(--muted-foreground)" }}>
-          Listo produktet e dyqanit tënd dhe arrij blerësit në Kosovë.
+        Mos e lëshoni këtë mundësi të reklamoni dhe shitni produktet tuaja
         </p>
       </div>
 
