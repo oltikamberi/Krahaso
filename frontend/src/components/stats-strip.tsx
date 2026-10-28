@@ -5,7 +5,7 @@ const STEPS: { icon: LucideIcon; label: string }[] = [
   { icon: Eye, label: "Shiko" },
   { icon: Scale, label: "Krahaso" },
   { icon: PiggyBank, label: "Kurse" },
-  { icon: Trophy, label: "Fito" },
+  { icon: Trophy, label: "Përfito" },
 ];
 
 export function StatsStrip() {
