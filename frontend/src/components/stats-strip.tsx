@@ -15,15 +15,30 @@ export function StatsStrip() {
       className="border-b"
       style={{ backgroundColor: "var(--card)", borderColor: "var(--border)" }}
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
-        <p
-          className="text-[13px] font-semibold leading-snug tracking-tight sm:shrink-0 sm:text-base"
-          style={{ color: "var(--foreground)" }}
-        >
-          Platforma numër 1 në Kosovë për krahasimin e çmimeve
-        </p>
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-6">
+        <h2 className="text-center sm:text-left">
+          <span
+            className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] sm:text-[11px]"
+            style={{
+              backgroundColor: "var(--savings-bg)",
+              color: "var(--savings)",
+              border: "1px solid rgba(4,120,87,0.28)",
+            }}
+          >
+            <Trophy className="h-3 w-3" strokeWidth={2.5} />
+            Nr. 1 në Kosovë
+          </span>
+          <span
+            className="mt-2 block text-[1.35rem] font-extrabold leading-[1.15] tracking-tight sm:text-2xl md:text-[1.7rem]"
+            style={{ color: "var(--heading)" }}
+          >
+            Platforma{" "}
+            <span style={{ color: "var(--warm)" }}>numër 1</span>
+            {" "}për krahasimin e çmimeve në Kosovë
+          </span>
+        </h2>
 
-        <ol className="grid grid-cols-4 gap-1 sm:flex sm:gap-2">
+        <ol className="grid grid-cols-4 gap-1 sm:flex sm:shrink-0 sm:gap-2">
           {STEPS.map(({ icon: Icon, label }, index) => (
             <li
               key={label}

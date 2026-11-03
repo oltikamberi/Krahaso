@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { TrendingUp } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { FOOTER_COLUMNS } from "@/lib/site";
 
 export function SiteFooter() {
   const { theme } = useTheme();
@@ -30,24 +31,20 @@ export function SiteFooter() {
             Platforma nr. 1 e krahasimit të çmimeve në Kosovë. Kurseni para çdo ditë.
           </p>
         </div>
-        {[
-          { title: "Platformë", links: ["Si funksionon", "Dyqanet tona", "Aplikacioni mobil"] },
-          { title: "Mbështetje", links: ["FAQ", "Na kontaktoni", "Raportoni gabim"] },
-          { title: "Ligjore", links: ["Privatësia", "Kushtet e përdorimit", "Cookies"] },
-        ].map((col) => (
+        {FOOTER_COLUMNS.map((col) => (
           <div key={col.title}>
             <h4 className="mb-3 font-mono text-xs font-bold uppercase tracking-wider text-white">
               {col.title}
             </h4>
             <ul className="space-y-2">
               {col.links.map((link) => (
-                <li key={link}>
+                <li key={link.href}>
                   <Link
-                    href="#"
+                    href={link.href}
                     className="text-xs transition-colors hover:text-white"
                     style={{ color: "rgba(255,255,255,0.55)" }}
                   >
-                    {link}
+                    {link.label}
                   </Link>
                 </li>
               ))}

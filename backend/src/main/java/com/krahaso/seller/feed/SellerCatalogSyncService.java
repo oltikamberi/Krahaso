@@ -3,6 +3,7 @@ package com.krahaso.seller.feed;
 import com.krahaso.category.Category;
 import com.krahaso.category.CategoryRepository;
 import com.krahaso.product.Product;
+import com.krahaso.product.ProductIdentity;
 import com.krahaso.product.ProductRepository;
 import com.krahaso.provider.Provider;
 import com.krahaso.provider.ProviderRepository;
@@ -15,9 +16,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.Normalizer;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -158,29 +157,10 @@ public class SellerCatalogSyncService {
         // Offers removed from a feed stay in the table as unavailable rather than vanishing
         product.setInStock(offer.isInStock() && !"removed_from_feed".equals(offer.getAvailability()));
         product.setExternalId(offer.getSku() != null ? offer.getSku() : offer.getProductUrl());
-        product.setMatchKey(matchKey(offer.getBrand(), offer.getName()));
-        if (product.getSpecs() == null || isNew) {
-            product.setSpecs(Map.of());
-        }
+        product.setMatchKey(ProductIdentity.matchKey(offer.getName(), offer.getBrand()));
+        product.setSpecs(ProductIdentity.specsMap(offer.getName(), offer.getBrand()));
 
         productRepository.save(product);
-    }
-
-    /**
-     * Produces the same normalised key the V3 migration used to backfill existing
-     * rows: lowercase, diacritics stripped, non-alphanumeric collapsed to a space,
-     * and then words are sorted alphabetically so the key is order-independent.
-     * Shared {@code match_key} groups the same product across all providers.
-     */
-    static String matchKey(String brand, String name) {
-        String raw = (brand == null ? "" : brand + " ") + (name == null ? "" : name);
-        String nfd = Normalizer.normalize(raw, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}+", "");
-        String normalized = nfd.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", " ").trim();
-        // Sort words so the key is stable regardless of brand/name ordering
-        String[] words = normalized.split(" +");
-        java.util.Arrays.sort(words);
-        return String.join(" ", words);
     }
 
     private static String domainOf(String email) {
