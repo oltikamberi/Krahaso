@@ -53,8 +53,8 @@ public class ProductService {
     /**
      * One card per product across retailers: listings that share the same
      * match_key are candidates, then split further when category / specs
-     * checks disagree. Only products available at 2+ stores are returned.
-     * Offers sorted cheapest-first.
+     * checks disagree. Only products with 2+ in-stock stores are returned.
+     * Offers are in-stock only, sorted cheapest-first.
      */
     public Page<GroupedProductDto> findGrouped(String categorySlug,
                                                BigDecimal minPrice,
@@ -81,11 +81,8 @@ public class ProductService {
         for (List<Product> bucket : byKey.values()) {
             for (List<Product> cluster : ProductMatching.partitionCompatible(bucket)) {
                 GroupedProductDto card = toGrouped(cluster);
-                // Always show products from registered sellers, even if only one store
-                // carries them. Hide scraped single-retailer products (nothing to compare).
-                boolean hasSeller = cluster.stream()
-                        .anyMatch(p -> p.getProvider().getSlug().startsWith("seller-"));
-                if (card.offerCount() < 2 && !hasSeller) {
+                // Need 2+ in-stock retailers — nothing to compare otherwise
+                if (card == null || card.offerCount() < 2) {
                     continue;
                 }
                 grouped.add(card);
@@ -106,10 +103,19 @@ public class ProductService {
         return new PageImpl<>(grouped.subList(from, to), PageRequest.of(page, size), grouped.size());
     }
 
+    /**
+     * Builds a comparison card from in-stock retailer offers only.
+     * Out-of-stock listings are excluded from comparison and from the catalog.
+     */
     private GroupedProductDto toGrouped(List<Product> listings) {
-        List<Product> offers = ProductMatching.dedupeByProvider(listings).stream()
+        List<Product> inStock = listings.stream().filter(Product::isInStock).toList();
+        List<Product> offers = ProductMatching.dedupeByProvider(inStock).stream()
                 .sorted(Comparator.comparing(Product::getCurrentPrice))
                 .toList();
+        if (offers.isEmpty()) {
+            return null;
+        }
+
         Product cheapest = offers.getFirst();
         Product display = pickDisplayProduct(offers, cheapest);
 
@@ -126,7 +132,8 @@ public class ProductService {
                 .toList();
 
         String key;
-        if (offers.size() > 1 && cheapest.getMatchKey() != null && !cheapest.getMatchKey().isBlank()
+        if (offers.size() > 1 && cheapest.getMatchKey() != null
+                && !cheapest.getMatchKey().isBlank()
                 && !cheapest.getMatchKey().startsWith("weak ")) {
             key = cheapest.getMatchKey();
         } else {
@@ -240,9 +247,7 @@ public class ProductService {
         for (List<Product> bucket : byKey.values()) {
             for (List<Product> cluster : ProductMatching.partitionCompatible(bucket)) {
                 GroupedProductDto card = toGrouped(cluster);
-                boolean hasSeller = cluster.stream()
-                        .anyMatch(p -> p.getProvider().getSlug().startsWith("seller-"));
-                if (card.offerCount() < 2 && !hasSeller) {
+                if (card == null || card.offerCount() < 2) {
                     continue;
                 }
                 grouped.add(card);
@@ -274,10 +279,14 @@ public class ProductService {
             siblings = List.of(product);
         }
 
-        List<Product> offerProducts = ProductMatching.dedupeByProvider(siblings).stream()
+        // Compare in-stock retailers only — OOS offers are omitted entirely
+        List<Product> inStockSiblings = siblings.stream().filter(Product::isInStock).toList();
+        List<Product> offerProducts = ProductMatching.dedupeByProvider(inStockSiblings).stream()
                 .sorted(Comparator.comparing(Product::getCurrentPrice))
                 .toList();
-        Product imageSource = pickDisplayProduct(offerProducts, product);
+        Product imageSource = pickDisplayProduct(
+                offerProducts.isEmpty() ? List.of(product) : offerProducts,
+                product);
         List<ProductOfferDto> offers = offerProducts.stream()
                 .map(p -> new ProductOfferDto(
                         p.getId(),

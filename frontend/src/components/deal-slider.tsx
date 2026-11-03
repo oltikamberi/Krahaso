@@ -15,8 +15,12 @@ const IMAGE_PRIORITY: Record<string, number> = {
   neptun: 9,
 };
 
+function stockOffers(product: GroupedProduct) {
+  return product.offers.filter((o) => o.inStock).sort((a, b) => a.price - b.price);
+}
+
 function savingsFor(product: GroupedProduct): number {
-  const offers = product.offers;
+  const offers = stockOffers(product);
   if (offers.length < 2) return 0;
   return offers[offers.length - 1].price - offers[0].price;
 }
@@ -35,7 +39,7 @@ function pickImageUrl(product: GroupedProduct): string | null {
 function toSlides(deals: GroupedProduct[]): FramerCarouselItem[] {
   return deals.flatMap((product) => {
     const imageUrl = upgradeImageUrl(pickImageUrl(product), "card");
-    const lowest = product.offers[0];
+    const lowest = stockOffers(product)[0];
     if (!imageUrl || !lowest) return [];
 
     const savings = savingsFor(product);

@@ -11,23 +11,35 @@ const COOLDOWN_DAYS = 5;
 /** Temporary preview hook — remove with the nav button later. */
 export const SUPPORT_POPUP_EVENT = "krahaso:toggle-support-popup";
 
-/**
- * Public PayPal.Me link. Prefer NEXT_PUBLIC_PAYPAL_ME_URL in .env.local;
- * the default is the live tip link (not a secret).
- */
-const PAYPAL_BASE =
-  process.env.NEXT_PUBLIC_PAYPAL_ME_URL?.trim() ||
-  "https://paypal.me/MbeshtetKrs";
-
 const AMOUNTS = [5, 10, 15, 20] as const;
+const MIN_CUSTOM_EUR = 1;
+const MAX_CUSTOM_EUR = 1500;
+
+/**
+ * Whop one-time checkout links for fixed tip amounts (public purchase_url values).
+ * Set in frontend/.env.local — not secrets.
+ */
+const WHOP_CHECKOUT: Record<(typeof AMOUNTS)[number], string> = {
+  5: process.env.NEXT_PUBLIC_WHOP_CHECKOUT_5?.trim() || "",
+  10: process.env.NEXT_PUBLIC_WHOP_CHECKOUT_10?.trim() || "",
+  15: process.env.NEXT_PUBLIC_WHOP_CHECKOUT_15?.trim() || "",
+  20: process.env.NEXT_PUBLIC_WHOP_CHECKOUT_20?.trim() || "",
+};
 
 type Step = "message" | "methods";
 type Amount = (typeof AMOUNTS)[number] | "other";
 
-function paypalHref(amount: Amount): string {
-  const base = PAYPAL_BASE.replace(/\/$/, "");
-  if (amount === "other") return base;
-  return `${base}/${amount}EUR`;
+function whopHref(amount: (typeof AMOUNTS)[number]): string | null {
+  const url = WHOP_CHECKOUT[amount];
+  return url || null;
+}
+
+function parseCustomAmount(raw: string): number | null {
+  const n = Number(raw.replace(",", ".").trim());
+  if (!Number.isFinite(n)) return null;
+  const rounded = Math.round(n * 100) / 100;
+  if (rounded < MIN_CUSTOM_EUR || rounded > MAX_CUSTOM_EUR) return null;
+  return rounded;
 }
 
 function shouldAutoShow(): boolean {
@@ -63,15 +75,23 @@ export function SupportPopup() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("message");
   const [amount, setAmount] = useState<Amount>(5);
+  const [customRaw, setCustomRaw] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function resetForm() {
+    setStep("message");
+    setAmount(5);
+    setCustomRaw("");
+    setLoading(false);
+    setError(null);
+  }
 
   useEffect(() => {
     function onToggle() {
       setOpen((prev) => {
         const next = !prev;
-        if (next) {
-          setStep("message");
-          setAmount(5);
-        }
+        if (next) resetForm();
         return next;
       });
     }
@@ -82,8 +102,7 @@ export function SupportPopup() {
   useEffect(() => {
     if (!shouldAutoShow()) return;
     const timer = window.setTimeout(() => {
-      setStep("message");
-      setAmount(5);
+      resetForm();
       setOpen(true);
     }, AUTO_SHOW_DELAY_MS);
     return () => window.clearTimeout(timer);
@@ -108,9 +127,56 @@ export function SupportPopup() {
 
   function close(persist: boolean) {
     setOpen(false);
-    setStep("message");
-    setAmount(5);
+    resetForm();
     if (persist) rememberDismiss();
+  }
+
+  const customAmount = amount === "other" ? parseCustomAmount(customRaw) : null;
+  const presetUrl = amount === "other" ? null : whopHref(amount);
+  const presetMissing = amount !== "other" && !presetUrl;
+
+  const displayAmount =
+    amount === "other" ? customAmount : amount;
+
+  const canContinue =
+    !loading &&
+    !presetMissing &&
+    (amount !== "other" ? Boolean(presetUrl) : customAmount !== null);
+
+  const continueLabel =
+    displayAmount != null ? `Vazhdo me €${displayAmount}` : "Vazhdo";
+
+  async function startCustomCheckout() {
+    if (customAmount === null) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/support/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amountEur: customAmount }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        message?: string;
+      };
+      if (!res.ok || !data.url) {
+        setError(data.message || "Nuk u hap pagesa. Provo përsëri.");
+        setLoading(false);
+        return;
+      }
+      close(true);
+      window.open(data.url, "_blank", "noopener,noreferrer");
+    } catch {
+      setError("Nuk u hap pagesa. Provo përsëri.");
+      setLoading(false);
+    }
+  }
+
+  function onContinuePreset() {
+    if (!presetUrl) return;
+    close(true);
+    window.open(presetUrl, "_blank", "noopener,noreferrer");
   }
 
   if (!open) return null;
@@ -237,7 +303,11 @@ export function SupportPopup() {
                       <button
                         key={value}
                         type="button"
-                        onClick={() => setAmount(value)}
+                        onClick={() => {
+                          setAmount(value);
+                          setCustomRaw("");
+                          setError(null);
+                        }}
                         aria-pressed={selected}
                         className="flex min-h-11 items-center justify-center rounded-lg font-mono text-sm font-bold tabular-nums transition-colors"
                         style={{
@@ -255,92 +325,211 @@ export function SupportPopup() {
                     );
                   })}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setAmount("other")}
-                  aria-pressed={amount === "other"}
-                  className="mt-2 flex min-h-10 w-full items-center justify-center rounded-lg text-sm font-semibold transition-colors"
-                  style={{
-                    backgroundColor:
-                      amount === "other" ? "var(--brand)" : "var(--background)",
-                    color: amount === "other" ? "#ffffff" : "var(--foreground)",
-                    border:
-                      amount === "other"
-                        ? "1px solid var(--brand)"
-                        : "1px solid var(--border)",
-                  }}
-                >
-                  Shumë tjetër
-                </button>
-              </fieldset>
-
-              <fieldset className="mb-6">
-                <legend
-                  className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-wider"
-                  style={{ color: "var(--muted-foreground)" }}
-                >
-                  Metoda e pagesës
-                </legend>
-                <div
-                  className="flex items-center justify-between gap-3 rounded-lg px-3.5 py-3"
-                  style={{
-                    backgroundColor: "var(--background)",
-                    border: "1px solid var(--brand)",
-                  }}
-                  role="radio"
-                  aria-checked="true"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                      style={{ border: "2px solid var(--brand)" }}
-                      aria-hidden
-                    >
-                      <span
-                        className="h-2 w-2 rounded-full"
-                        style={{ backgroundColor: "var(--brand)" }}
-                      />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold">PayPal</p>
-                      <p
-                        className="text-xs"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
-                        Pagesë e sigurt përmes PayPal
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className="font-mono text-[10px] font-bold uppercase tracking-wider"
-                    style={{ color: "var(--muted-foreground)" }}
+                <div className="mt-2.5">
+                  <label className="sr-only" htmlFor="support-custom-amount">
+                    Shuma në euro
+                  </label>
+                  <div
+                    className="flex min-h-11 items-center gap-2 rounded-lg px-3"
+                    style={{
+                      backgroundColor: "var(--background)",
+                      border:
+                        amount === "other"
+                          ? "1px solid var(--brand)"
+                          : "1px solid var(--border)",
+                    }}
                   >
-                    Aktiv
-                  </span>
+                    <span
+                      className="font-mono text-sm font-bold"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      €
+                    </span>
+                    <input
+                      id="support-custom-amount"
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      placeholder="Shkruaj shumën"
+                      value={customRaw}
+                      onChange={(e) => {
+                        setCustomRaw(e.target.value);
+                        setAmount("other");
+                        setError(null);
+                      }}
+                      onFocus={() => {
+                        setAmount("other");
+                        setError(null);
+                      }}
+                      className="w-full bg-transparent font-mono text-sm font-bold outline-none"
+                      style={{ color: "var(--foreground)" }}
+                    />
+                  </div>
                 </div>
               </fieldset>
 
-              <a
-                href={paypalHref(amount)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => close(true)}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold transition-opacity hover:opacity-95"
+              <div className="mb-6">
+                <p
+                  className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-wider"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  Metodat e pagesës që mbështeten
+                </p>
+                <div
+                  className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+                  aria-label="Metodat e pagesës"
+                >
+                  {/* Card */}
+                  <span
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl px-3"
+                    style={{
+                      backgroundColor: "#f3f4f6",
+                      border: "1px solid #e5e7eb",
+                      color: "var(--foreground)",
+                    }}
+                    aria-label="Card"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-[15px] w-[15px] shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      aria-hidden
+                    >
+                      <rect x="2.5" y="5.5" width="19" height="13" rx="2.25" />
+                      <path d="M2.5 10h19" />
+                      <path d="M6.5 15h3.5" />
+                    </svg>
+                    <span className="text-[12px] font-semibold tracking-tight">
+                      Card
+                    </span>
+                  </span>
+
+                  {/* Apple Pay */}
+                  <span
+                    className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl px-3 text-white"
+                    style={{
+                      backgroundColor: "#0a0a0a",
+                      border: "1px solid #0a0a0a",
+                    }}
+                    aria-label="Apple Pay"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 shrink-0"
+                      fill="currentColor"
+                      aria-hidden
+                    >
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                    </svg>
+                    <span className="text-[12px] font-semibold tracking-tight">
+                      Pay
+                    </span>
+                  </span>
+
+                  {/* Google Pay */}
+                  <span
+                    className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl px-3"
+                    style={{
+                      backgroundColor: "var(--background)",
+                      border: "1px solid var(--border)",
+                      color: "var(--foreground)",
+                    }}
+                    aria-label="Google Pay"
+                  >
+                    <svg
+                      viewBox="0 0 18 18"
+                      className="h-3.5 w-3.5 shrink-0"
+                      aria-hidden
+                    >
+                      <path
+                        fill="#4285F4"
+                        d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8c-.2 1.1-.8 2-1.8 2.6v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.4z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.9.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3C2.4 15.9 5.5 18 9 18z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M3.9 10.7c-.2-.5-.3-1.1-.3-1.7s.1-1.2.3-1.7V5H.9C.3 6.2 0 7.5 0 9s.3 2.8.9 4l3-2.3z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6C13.5.9 11.4 0 9 0 5.5 0 2.4 2.1.9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"
+                      />
+                    </svg>
+                    <span className="text-[12px] font-semibold tracking-tight">
+                      Pay
+                    </span>
+                  </span>
+
+                  {/* Crypto / Bitcoin */}
+                  <span
+                    className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl px-3"
+                    style={{
+                      backgroundColor: "var(--background)",
+                      border: "1px solid var(--border)",
+                      color: "var(--foreground)",
+                    }}
+                    aria-label="Crypto"
+                  >
+                    <span
+                      className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] text-[11px] font-bold leading-none text-white"
+                      style={{ backgroundColor: "#F7931A" }}
+                      aria-hidden
+                    >
+                      ₿
+                    </span>
+                    <span className="text-[12px] font-semibold tracking-tight">
+                      Crypto
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              {presetMissing ? (
+                <p
+                  className="mb-3 text-center text-[11px] leading-relaxed"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  Whop nuk është konfiguruar ende për këtë shumë. Vendosni linkun
+                  në .env.local.
+                </p>
+              ) : null}
+
+              {error ? (
+                <p
+                  className="mb-3 text-center text-[11px] leading-relaxed"
+                  style={{ color: "var(--destructive, #b91c1c)" }}
+                >
+                  {error}
+                </p>
+              ) : null}
+
+              <button
+                type="button"
+                disabled={!canContinue}
+                onClick={() => {
+                  if (amount === "other") void startCustomCheckout();
+                  else onContinuePreset();
+                }}
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
                 style={{
                   backgroundColor: "var(--action)",
                   color: "var(--action-foreground)",
                 }}
               >
-                {amount === "other"
-                  ? "Vazhdo te PayPal"
-                  : `Vazhdo me €${amount}`}
-              </a>
+                {loading ? "Duke hapur pagesën…" : continueLabel}
+              </button>
 
               <p
                 className="mt-3 text-center text-[11px] leading-relaxed"
                 style={{ color: "var(--muted-foreground)" }}
               >
-                Do të hapet faqja e PayPal. Kartë ose llogari PayPal.
+                Do të hapet faqja e pagesës. Kartë, Apple Pay ose Google Pay.
               </p>
             </>
           )}

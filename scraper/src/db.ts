@@ -37,6 +37,7 @@ export interface UpsertResult {
   updated: number;
   priceChanges: number;
   skipped: number;
+  skippedOutOfStock: number;
 }
 
 export async function upsertProducts(
@@ -48,6 +49,7 @@ export async function upsertProducts(
     updated: 0,
     priceChanges: 0,
     skipped: 0,
+    skippedOutOfStock: 0,
   };
 
   for (const product of products) {
@@ -73,6 +75,12 @@ export async function upsertProducts(
     );
 
     if (existing.rows.length === 0) {
+      // Don't seed the catalog with products that are already out of stock
+      if (!product.inStock) {
+        result.skippedOutOfStock++;
+        continue;
+      }
+
       const inserted = await pool.query<{ id: number }>(
         `INSERT INTO products
            (category_id, provider_id, external_id, name, brand, image_url,
@@ -137,4 +145,64 @@ export async function upsertProducts(
   }
 
   return result;
+}
+
+/**
+ * After a full scrape for a provider, mark in-stock products that were not seen
+ * as out of stock (delisted / removed from category pages).
+ * Skips the update when the scrape looks incomplete vs current catalog size.
+ */
+export async function markMissingOutOfStock(
+  providerId: number,
+  seenUrls: string[],
+): Promise<number> {
+  if (seenUrls.length === 0) {
+    console.warn("Skipping mark-missing: scrape returned 0 products");
+    return 0;
+  }
+
+  const countResult = await pool.query<{ count: string }>(
+    "SELECT COUNT(*)::text AS count FROM products WHERE provider_id = $1 AND in_stock = true",
+    [providerId],
+  );
+  const inStockCount = Number(countResult.rows[0]?.count ?? 0);
+
+  // Guard against partial scrapes wiping the catalog (e.g. blocked mid-run)
+  if (inStockCount > 0 && seenUrls.length < Math.max(20, inStockCount * 0.5)) {
+    console.warn(
+      `Skipping mark-missing: scraped ${seenUrls.length} urls vs ${inStockCount} in-stock ` +
+        `(looks incomplete)`,
+    );
+    return 0;
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const marked = await client.query<{ id: number; current_price: string }>(
+      `UPDATE products
+       SET in_stock = false, updated_at = now()
+       WHERE provider_id = $1
+         AND in_stock = true
+         AND NOT (product_url = ANY($2::text[]))
+       RETURNING id, current_price`,
+      [providerId, seenUrls],
+    );
+
+    for (const row of marked.rows) {
+      await client.query(
+        "INSERT INTO price_history (product_id, price, in_stock) VALUES ($1, $2, false)",
+        [row.id, row.current_price],
+      );
+    }
+
+    await client.query("COMMIT");
+    return marked.rowCount ?? marked.rows.length;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 }

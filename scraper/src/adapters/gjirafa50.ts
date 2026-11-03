@@ -54,6 +54,8 @@ function parseCards(
       null;
     const productUrl = absoluteUrl(href);
 
+    // Category listings don't expose OOS badges — presence on the listing
+    // means available. Products missing from a full scrape are marked OOS in db.
     products.push({
       categorySlug,
       externalId: productUrl,

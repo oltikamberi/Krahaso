@@ -15,7 +15,9 @@ const EMPTY_PAGE: PageResponse<GroupedProduct> = {
 };
 
 function savingsAmount(product: GroupedProduct): number {
-  const offers = product.offers;
+  const offers = product.offers
+    .filter((o) => o.inStock)
+    .sort((a, b) => a.price - b.price);
   if (offers.length < 2) return 0;
   return offers[offers.length - 1].price - offers[0].price;
 }

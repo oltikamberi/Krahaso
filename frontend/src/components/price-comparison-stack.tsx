@@ -9,15 +9,20 @@ interface Props {
   currency: string;
 }
 
-/** Renders a cheapest-first stack of retailer offers for a product. */
+/** In-stock retailers only — cheapest first. */
 export function PriceComparisonStack({ offers, currency }: Props) {
-  if (offers.length === 0) return null;
+  const stockOffers = offers.filter((o) => o.inStock).sort((a, b) => a.price - b.price);
+  if (stockOffers.length === 0) return null;
 
-  const sorted = [...offers].sort((a, b) => a.price - b.price);
-  const cheapest = sorted[0];
-  const savings = sorted.length > 1 ? sorted[sorted.length - 1].price - cheapest.price : 0;
-  const highlightSavings = savings >= 10;
-  const isComparison = sorted.length > 1;
+  const cheapestId = stockOffers[0]?.id;
+  const savings =
+    stockOffers.length > 1
+      ? Math.max(...stockOffers.map((o) => o.price)) - Math.min(...stockOffers.map((o) => o.price))
+      : 0;
+  const highlightSavings = savings > 5;
+  const tinyDifference = stockOffers.length > 1 && savings > 0 && savings <= 5;
+  const samePrices = stockOffers.length > 1 && savings === 0;
+  const isComparison = stockOffers.length > 1;
 
   return (
     <div className="flex flex-col gap-3">
@@ -26,20 +31,43 @@ export function PriceComparisonStack({ offers, currency }: Props) {
           <TrendingDown className="h-4 w-4" style={{ color: "var(--brand)" }} />
           <h3 className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
             {isComparison
-              ? `Krahaso çmimet (${sorted.length} dyqane)`
+              ? `Krahaso çmimet (${stockOffers.length} dyqane)`
               : "Disponueshmëria"}
           </h3>
         </div>
-        {highlightSavings && (
+        {highlightSavings ? (
           <span className="text-xs font-semibold" style={{ color: "var(--savings)" }}>
             Kurseni {formatPrice(savings, currency)}
           </span>
-        )}
+        ) : tinyDifference ? (
+          <span
+            className="inline-flex items-baseline gap-1.5 rounded-md px-2 py-0.5 text-xs font-bold"
+            style={{
+              backgroundColor: "var(--cheapest-bg)",
+              color: "var(--deal-foreground)",
+              border: "1px solid var(--cheapest-border)",
+            }}
+          >
+            Diferencë shumë e vogël
+            <span className="font-mono tabular-nums">{formatPrice(savings, currency)}</span>
+          </span>
+        ) : samePrices ? (
+          <span
+            className="rounded-md px-2 py-0.5 text-xs font-bold"
+            style={{
+              backgroundColor: "var(--cheapest-bg)",
+              color: "var(--deal-foreground)",
+              border: "1px solid var(--cheapest-border)",
+            }}
+          >
+            Çmime të njejta
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        {sorted.map((listing, i) => {
-          const isHighlighted = highlightSavings && i === 0;
+        {stockOffers.map((listing, i) => {
+          const isHighlighted = highlightSavings && listing.id === cheapestId;
           return (
             <div
               key={listing.id}
@@ -77,17 +105,9 @@ export function PriceComparisonStack({ offers, currency }: Props) {
                     Më i lirë
                   </span>
                 )}
-                {!listing.inStock && (
-                  <span
-                    className="text-[9px] font-medium uppercase"
-                    style={{ color: "var(--muted-foreground)" }}
-                  >
-                    S&apos;ka stok
-                  </span>
-                )}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <span
                   className="font-mono text-sm font-bold tabular-nums"
                   style={{

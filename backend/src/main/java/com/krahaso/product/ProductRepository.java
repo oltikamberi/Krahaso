@@ -43,6 +43,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
               (SELECT count(*) FROM (
                  SELECT match_key FROM products
                  WHERE current_price >= 50
+                   AND in_stock = true
                    AND match_key IS NOT NULL AND match_key <> ''
                    AND match_key NOT LIKE 'weak %'
                    AND provider_id NOT IN (SELECT id FROM providers WHERE slug = 'demo')
@@ -52,14 +53,16 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
               (SELECT count(*) FROM providers WHERE slug <> 'demo') AS "storeCount",
               (SELECT count(*) FROM (
                  SELECT match_key FROM products
-                 WHERE current_price >= 50 AND match_key IS NOT NULL AND match_key <> ''
+                 WHERE current_price >= 50 AND in_stock = true
+                   AND match_key IS NOT NULL AND match_key <> ''
                    AND match_key NOT LIKE 'weak %'
                  GROUP BY match_key HAVING count(DISTINCT provider_id) >= 2
               ) m) AS "comparableCount",
               (SELECT coalesce(round(avg(spread)), 0) FROM (
                  SELECT max(current_price) - min(current_price) AS spread
                  FROM products
-                 WHERE current_price >= 50 AND match_key IS NOT NULL AND match_key <> ''
+                 WHERE current_price >= 50 AND in_stock = true
+                   AND match_key IS NOT NULL AND match_key <> ''
                    AND match_key NOT LIKE 'weak %'
                  GROUP BY match_key
                  HAVING count(DISTINCT provider_id) >= 2

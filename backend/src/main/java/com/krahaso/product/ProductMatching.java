@@ -126,14 +126,22 @@ final class ProductMatching {
     }
 
     /**
-     * Within a compatible cluster, keep cheapest listing per provider.
+     * Within a compatible cluster, keep one listing per provider.
+     * Prefer in-stock over OOS; among equals, keep the cheapest.
      */
     static List<Product> dedupeByProvider(List<Product> listings) {
         Map<String, Product> byProvider = new LinkedHashMap<>();
         for (Product product : listings) {
             String slug = product.getProvider().getSlug();
             Product existing = byProvider.get(slug);
-            if (existing == null || product.getCurrentPrice().compareTo(existing.getCurrentPrice()) < 0) {
+            if (existing == null) {
+                byProvider.put(slug, product);
+                continue;
+            }
+            if (product.isInStock() && !existing.isInStock()) {
+                byProvider.put(slug, product);
+            } else if (product.isInStock() == existing.isInStock()
+                    && product.getCurrentPrice().compareTo(existing.getCurrentPrice()) < 0) {
                 byProvider.put(slug, product);
             }
         }

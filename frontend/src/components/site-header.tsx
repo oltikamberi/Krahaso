@@ -72,7 +72,7 @@ export function SiteHeader() {
               }}
             >
               <HeartHandshake className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Popup</span>
+              <span className="hidden sm:inline">Perkrah Krahaso</span>
             </button>
             <button
               onClick={toggle}

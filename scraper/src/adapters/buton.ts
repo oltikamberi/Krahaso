@@ -55,6 +55,9 @@ function parseCards($: cheerio.CheerioAPI, categorySlug: string): ScrapedProduct
       $card.find(".ty-grid-list__image img").attr("src") ||
       null;
 
+    // CS-Cart custom overlay: sold-out.png / "E SHITUR" on OOS cards
+    const inStock = $card.find(".out-of-stock-overlay").length === 0;
+
     products.push({
       categorySlug,
       externalId: absoluteUrl(href),
@@ -64,7 +67,7 @@ function parseCards($: cheerio.CheerioAPI, categorySlug: string): ScrapedProduct
       productUrl: absoluteUrl(href),
       price,
       currency: "EUR",
-      inStock: true,
+      inStock,
       specs: {},
     });
   }

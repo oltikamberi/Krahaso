@@ -23,21 +23,25 @@ export default async function ProductPage({ params }: PageProps) {
   const product = await getProduct(id);
   const history = [...product.priceHistory].reverse();
 
-  const offers =
+  const offers = (
     product.offers && product.offers.length > 0
-      ? [...product.offers].sort((a, b) => a.price - b.price)
-      : [
-          {
-            id: product.id,
-            providerName: product.providerName,
-            providerSlug: product.providerSlug,
-            price: product.price,
-            currency: product.currency,
-            inStock: product.inStock,
-            productUrl: product.productUrl,
-          },
-        ];
-
+      ? product.offers
+      : product.inStock
+        ? [
+            {
+              id: product.id,
+              providerName: product.providerName,
+              providerSlug: product.providerSlug,
+              price: product.price,
+              currency: product.currency,
+              inStock: product.inStock,
+              productUrl: product.productUrl,
+            },
+          ]
+        : []
+  )
+    .filter((o) => o.inStock)
+    .sort((a, b) => a.price - b.price);
   const cheapest = offers[0];
   const savings =
     offers.length > 1 ? offers[offers.length - 1].price - cheapest.price : 0;
@@ -104,52 +108,76 @@ export default async function ProductPage({ params }: PageProps) {
             {product.name}
           </h1>
 
-          <div className="flex flex-wrap items-end gap-3">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-wider" style={{ color: "var(--muted-foreground)" }}>
-                {offers.length > 1
-                  ? `Nga ${offers.length} dyqane · më i liri`
-                  : `1 dyqan`}
-              </p>
-              <span className="font-mono text-3xl font-extrabold" style={{ color: "var(--price-highlight)" }}>
-                {formatPrice(cheapest.price, product.currency)}
-              </span>
-            </div>
-            {savings >= 10 && (
-              <span className="mb-1 text-lg font-bold" style={{ color: "var(--savings)" }}>
-                Kurseni deri {formatPrice(savings, product.currency)}
-              </span>
-            )}
-            {cheapest.inStock ? (
+          {cheapest ? (
+            <div className="flex flex-wrap items-end gap-3">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-wider" style={{ color: "var(--muted-foreground)" }}>
+                  {offers.length > 1
+                    ? `Nga ${offers.length} dyqane · më i liri`
+                    : `1 dyqan`}
+                </p>
+                <span className="font-mono text-3xl font-extrabold" style={{ color: "var(--price-highlight)" }}>
+                  {formatPrice(cheapest.price, product.currency)}
+                </span>
+              </div>
+              {savings > 5 ? (
+                <span className="mb-1 text-lg font-bold" style={{ color: "var(--savings)" }}>
+                  Kurseni deri {formatPrice(savings, product.currency)}
+                </span>
+              ) : offers.length > 1 && savings > 0 && savings <= 5 ? (
+                <span
+                  className="mb-1 inline-flex items-baseline gap-1.5 rounded-md px-2.5 py-1 text-sm font-bold"
+                  style={{
+                    backgroundColor: "var(--cheapest-bg)",
+                    color: "var(--deal-foreground)",
+                    border: "1px solid var(--cheapest-border)",
+                  }}
+                >
+                  Diferencë shumë e vogël
+                  <span className="font-mono tabular-nums">
+                    {formatPrice(savings, product.currency)}
+                  </span>
+                </span>
+              ) : offers.length > 1 && savings === 0 ? (
+                <span
+                  className="mb-1 rounded-md px-2.5 py-1 text-sm font-bold"
+                  style={{
+                    backgroundColor: "var(--cheapest-bg)",
+                    color: "var(--deal-foreground)",
+                    border: "1px solid var(--cheapest-border)",
+                  }}
+                >
+                  Çmime të njejta
+                </span>
+              ) : null}
               <span
                 className="mb-1.5 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white"
                 style={{ backgroundColor: "var(--savings)" }}
               >
                 Në stok
               </span>
-            ) : (
-              <span
-                className="mb-1.5 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
-                style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
-              >
-                S&apos;ka stok
-              </span>
-            )}
-          </div>
+            </div>
+          ) : (
+            <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+              Ky produkt nuk është aktualisht në stok te asnjë dyqan.
+            </p>
+          )}
 
-          <a
-            href={cheapest.productUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex w-fit items-center gap-2 rounded px-5 py-2.5 text-sm font-bold transition-colors"
-            style={{
-              backgroundColor: "var(--action)",
-              color: "var(--action-foreground)",
-            }}
-          >
-            Shko te {cheapest.providerName}
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          {cheapest && (
+            <a
+              href={cheapest.productUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-fit items-center gap-2 rounded px-5 py-2.5 text-sm font-bold transition-colors"
+              style={{
+                backgroundColor: "var(--action)",
+                color: "var(--action-foreground)",
+              }}
+            >
+              Shko te {cheapest.providerName}
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          )}
 
           <Separator className="my-1" />
 

@@ -29,11 +29,16 @@ function pickImageUrl(product: GroupedProduct): string | null {
 export function ProductCard({ product }: { product: GroupedProduct }) {
   const [liked, setLiked] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
-  const offers = product.offers;
+  // In-stock retailers only (API already filters; keep client-side as defense)
+  const offers = product.offers
+    .filter((o) => o.inStock)
+    .sort((a, b) => a.price - b.price);
   const lowest = offers[0];
   const highest = offers[offers.length - 1];
   const savings = highest && lowest ? highest.price - lowest.price : 0;
-  const highlightSavings = savings >= 10;
+  const highlightSavings = savings > 5;
+  const tinyDifference = offers.length > 1 && savings > 0 && savings <= 5;
+  const samePrices = offers.length > 1 && savings === 0;
   const detailId = lowest?.id;
   const imageUrl = upgradeImageUrl(pickImageUrl(product), "card");
 
@@ -85,7 +90,7 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
           >
             Nga {offers.length} dyqane
           </span>
-          {highlightSavings && (
+          {highlightSavings ? (
             <span
               className="inline-flex w-full items-baseline justify-between gap-1 rounded-md px-1.5 py-1 @[240px]:w-auto @[240px]:justify-start @[240px]:gap-1.5 @[240px]:px-2"
               style={{
@@ -101,12 +106,43 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
                 {formatPrice(savings, product.currency)}
               </span>
             </span>
-          )}
+          ) : tinyDifference ? (
+            <span
+              className="inline-flex w-full items-baseline justify-between gap-1 rounded-md px-1.5 py-1 @[240px]:w-auto @[240px]:justify-start @[240px]:gap-1.5 @[240px]:px-2"
+              style={{
+                backgroundColor: "var(--cheapest-bg)",
+                color: "var(--deal-foreground)",
+                border: "1px solid var(--cheapest-border)",
+              }}
+              title={`Diferenca midis dyqaneve është vetëm ${formatPrice(savings, product.currency)}`}
+            >
+              <span className="text-[10px] font-medium leading-none tracking-wide sm:text-[11px]">
+                Diferencë shumë e vogël
+              </span>
+              <span className="font-mono text-[13px] font-bold leading-none tracking-tight tabular-nums sm:text-[14px]">
+                {formatPrice(savings, product.currency)}
+              </span>
+            </span>
+          ) : samePrices ? (
+            <span
+              className="inline-flex w-full items-center justify-center rounded-md px-1.5 py-1 @[240px]:w-auto @[240px]:justify-start @[240px]:px-2"
+              style={{
+                backgroundColor: "var(--cheapest-bg)",
+                color: "var(--deal-foreground)",
+                border: "1px solid var(--cheapest-border)",
+              }}
+              title="Të gjitha dyqanet kanë të njëjtin çmim"
+            >
+              <span className="text-[10px] font-bold leading-none tracking-wide sm:text-[11px]">
+                Çmime të njejta
+              </span>
+            </span>
+          ) : null}
         </div>
 
         <div className="space-y-0.5">
-          {offers.map((offer, i) => {
-            const isCheapest = i === 0;
+          {offers.map((offer) => {
+            const isCheapest = lowest != null && offer.id === lowest.id;
             const isHighlighted = highlightSavings && isCheapest;
             return (
               <div
