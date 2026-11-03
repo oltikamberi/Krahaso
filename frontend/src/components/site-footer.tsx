@@ -56,7 +56,7 @@ export function SiteFooter() {
         ))}
       </div>
       <div
-        className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4"
+        className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
         style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
       >
         <span className="font-mono text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>

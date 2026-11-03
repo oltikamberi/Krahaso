@@ -17,7 +17,7 @@ export function StatsStrip() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
         <p
-          className="text-[13px] font-semibold leading-snug tracking-tight sm:text-base"
+          className="text-[13px] font-semibold leading-snug tracking-tight sm:shrink-0 sm:text-base"
           style={{ color: "var(--foreground)" }}
         >
           Platforma numër 1 në Kosovë për krahasimin e çmimeve

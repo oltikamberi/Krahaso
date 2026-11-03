@@ -17,13 +17,13 @@ export function SiteHeader() {
           borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-1.5 sm:px-4">
           <div
-            className="flex items-center gap-5 font-mono text-[11px]"
+            className="flex min-w-0 items-center gap-5 font-mono text-[10px] sm:text-[11px]"
             style={{ color: "rgba(255,255,255,0.72)" }}
           >
-            <span className="flex items-center gap-1.5">
-              <Zap className="h-3 w-3" style={{ color: "var(--deal)" }} />
+            <span className="flex min-w-0 items-center gap-1.5 truncate">
+              <Zap className="h-3 w-3 shrink-0" style={{ color: "var(--deal)" }} />
               Çmime të përditësuara çdo ditë
             </span>
             <span className="hidden items-center gap-1.5 sm:flex">
@@ -35,7 +35,9 @@ export function SiteHeader() {
               Dorëzim në Kosovë
             </span>
           </div>
-          <div className="font-mono text-[11px] text-white/60">🇽🇰 Kosova &bull; €EUR</div>
+          <div className="shrink-0 font-mono text-[10px] text-white/60 sm:text-[11px]">
+            🇽🇰 €EUR
+          </div>
         </div>
       </div>
 
@@ -46,17 +48,17 @@ export function SiteHeader() {
           boxShadow: "0 1px 0 rgba(255,255,255,0.06), 0 8px 24px rgba(11,31,58,0.18)",
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-6">
+          <Link href="/" className="flex min-w-0 shrink items-center gap-2 sm:gap-2.5">
             <div
-              className="flex h-8 w-8 items-center justify-center rounded-lg"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
               style={{ backgroundColor: "var(--action)" }}
             >
               <TrendingUp className="h-4 w-4" strokeWidth={2.5} style={{ color: "#4ade80" }} />
             </div>
-            <div className="relative pb-1">
-              <span className="text-base font-extrabold tracking-tight text-white">Krahaso</span>
-              <span className="text-base font-extrabold tracking-tight text-white">
+            <div className="relative min-w-0 pb-1">
+              <span className="text-[15px] font-extrabold tracking-tight text-white sm:text-base">Krahaso</span>
+              <span className="text-[15px] font-extrabold tracking-tight text-white sm:text-base">
                 {" "}Çmimin
               </span>
               <span
@@ -77,14 +79,14 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
             {/* TEMP: preview toggle for the support popup — remove when the design is settled */}
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(SUPPORT_POPUP_EVENT))}
               aria-label="Hap popup-in e mbështetjes"
               title="Preview popup (temp)"
-              className="flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-white transition-colors sm:px-3.5"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white transition-colors sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3.5"
               style={{
                 backgroundColor: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.16)",
@@ -102,7 +104,7 @@ export function SiteHeader() {
             <button
               onClick={toggle}
               aria-label={isDark ? "Tema e çelët" : "Tema e errët"}
-              className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-full transition-colors sm:h-9 sm:w-9"
               style={{
                 backgroundColor: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.16)",
@@ -128,7 +130,7 @@ export function SiteHeader() {
             </Link>
             <Link
               href="/regjistrohu"
-              className="rounded-lg px-4 py-2 text-sm font-bold transition-colors"
+              className="rounded-lg px-2.5 py-1.5 text-xs font-bold transition-colors sm:px-4 sm:py-2 sm:text-sm"
               style={{
                 backgroundColor: "var(--action)",
                 color: "var(--action-foreground)",

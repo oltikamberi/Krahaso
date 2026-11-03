@@ -159,11 +159,11 @@ export default function FramerCarousel({
                     referrerPolicy="no-referrer"
                     // White, not --secondary: retailer photos ship on white, so any other
                     // colour shows the photo's edge as a rectangle around the product
-                    className="h-full w-full select-none bg-white object-contain p-6 pointer-events-none sm:p-8"
+                    className="h-full w-full select-none bg-white object-contain p-4 pb-16 pointer-events-none sm:p-8 sm:pb-8"
                     draggable={false}
                   />
                   <div
-                    className="absolute inset-x-0 bottom-0 p-4 pb-9 pt-20 text-white sm:pb-10"
+                    className="absolute inset-x-0 bottom-0 p-3 pb-11 pt-16 text-white sm:p-4 sm:pb-10 sm:pt-20"
                     style={{
                       background:
                         "linear-gradient(to top, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.55) 45%, transparent 100%)",
@@ -180,7 +180,7 @@ export default function FramerCarousel({
                         {item.badge}
                       </span>
                     )}
-                    <h3 className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
+                    <h3 className="line-clamp-1 text-sm font-semibold leading-snug sm:line-clamp-2 sm:text-base">
                       {item.title}
                     </h3>
                     {item.subtitle && (
@@ -222,7 +222,7 @@ export default function FramerCarousel({
             disabled={index === 0}
             aria-label="Oferta e mëparshme"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            className={`absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full shadow-lg transition-transform sm:left-4 sm:h-10 sm:w-10 ${
+            className={`absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full shadow-lg transition-transform sm:left-4 sm:h-10 sm:w-10 ${
               index === 0
                 ? "cursor-not-allowed bg-white/70 opacity-40"
                 : "bg-white opacity-80 hover:scale-110 hover:opacity-100"
@@ -236,7 +236,7 @@ export default function FramerCarousel({
             disabled={index === count - 1}
             aria-label="Oferta e radhës"
             onClick={() => setIndex((i) => Math.min(count - 1, i + 1))}
-            className={`absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full shadow-lg transition-transform sm:right-4 sm:h-10 sm:w-10 ${
+            className={`absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full shadow-lg transition-transform sm:right-4 sm:h-10 sm:w-10 ${
               index === count - 1
                 ? "cursor-not-allowed bg-white/70 opacity-40"
                 : "bg-white opacity-80 hover:scale-110 hover:opacity-100"

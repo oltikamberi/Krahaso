@@ -52,7 +52,7 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
           </span>
 
           <h1
-            className="mb-3 max-w-xl text-[2rem] font-extrabold leading-[1.08] tracking-tight sm:mb-4 sm:text-5xl md:text-[3.25rem]"
+            className="mb-3 max-w-xl text-[1.75rem] font-extrabold leading-[1.1] tracking-tight sm:mb-4 sm:text-5xl md:text-[3.25rem]"
             style={{ color: "var(--heading)" }}
           >
             Gjej çmimin{" "}
@@ -83,13 +83,13 @@ export function HomeHero({ deals = [] }: { deals?: GroupedProduct[] }) {
                 placeholder="Kërko iPhone, laptop, televizor…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="min-w-0 flex-1 bg-transparent px-3 py-4 text-[15px] outline-none placeholder:text-slate-400 sm:px-4"
+                className="min-w-0 flex-1 bg-transparent px-2 py-3.5 text-[15px] outline-none placeholder:text-slate-400 sm:px-4 sm:py-4"
                 style={{ color: "var(--foreground)" }}
                 aria-label="Kërko produkte"
               />
               <button
                 type="submit"
-                className="m-1.5 shrink-0 rounded-lg px-4 py-2.5 text-sm font-bold transition-colors sm:px-6"
+                className="m-1 shrink-0 rounded-lg px-3 py-2.5 text-sm font-bold transition-colors sm:m-1.5 sm:px-6"
                 style={{
                   backgroundColor: "var(--action)",
                   color: "var(--action-foreground)",

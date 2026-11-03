@@ -183,7 +183,7 @@ export function SupportPopup() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="support-popup-title"
@@ -196,7 +196,7 @@ export function SupportPopup() {
       />
 
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-xl shadow-lg"
+        className="relative max-h-[88dvh] w-full max-w-md overflow-y-auto rounded-t-2xl shadow-lg sm:rounded-xl"
         style={{
           backgroundColor: "var(--popover)",
           border: "1px solid var(--border)",
@@ -213,7 +213,7 @@ export function SupportPopup() {
           <X className="h-4 w-4" />
         </button>
 
-        <div className="px-6 pb-6 pt-7">
+        <div className="px-4 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-7">
           {step === "message" ? (
             <>
               <div

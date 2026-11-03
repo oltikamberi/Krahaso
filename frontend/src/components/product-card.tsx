@@ -229,7 +229,8 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
             }}
           >
             <span className="truncate">
-              Shiko produktin —{" "}
+              <span className="sm:hidden">Shiko — </span>
+              <span className="hidden sm:inline">Shiko produktin — </span>
               <span
                 className="font-mono font-black tabular-nums"
                 style={{ color: "var(--cta-price)" }}

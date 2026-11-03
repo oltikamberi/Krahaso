@@ -65,7 +65,7 @@ export function DealSlider({ deals }: { deals: GroupedProduct[] }) {
       slides={slides}
       autoPlayMs={4500}
       className="p-0"
-      heightClassName="h-[240px] sm:h-[300px] md:h-[340px]"
+      heightClassName="h-[280px] sm:h-[300px] md:h-[340px]"
     />
   );
 }
