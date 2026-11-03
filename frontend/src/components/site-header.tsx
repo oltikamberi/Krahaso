@@ -49,14 +49,14 @@ export function SiteHeader() {
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 md:gap-6">
-          <Link href="/" className="flex min-w-0 shrink items-center gap-2 sm:gap-2.5">
+          <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
             <div
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
               style={{ backgroundColor: "var(--action)" }}
             >
               <TrendingUp className="h-4 w-4" strokeWidth={2.5} style={{ color: "#4ade80" }} />
             </div>
-            <div className="relative min-w-0 pb-1">
+            <div className="relative whitespace-nowrap pb-1">
               <span className="text-[15px] font-extrabold tracking-tight text-white sm:text-base">Krahaso</span>
               <span className="text-[15px] font-extrabold tracking-tight text-white sm:text-base">
                 {" "}Çmimin
@@ -68,7 +68,7 @@ export function SiteHeader() {
               />
             </div>
             <span
-              className="self-start rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em]"
+              className="hidden self-start rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] sm:inline"
               style={{
                 backgroundColor: "rgba(255,255,255,0.12)",
                 color: "rgba(255,255,255,0.85)",
