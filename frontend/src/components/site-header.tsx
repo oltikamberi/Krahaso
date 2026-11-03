@@ -80,26 +80,29 @@ export function SiteHeader() {
           </Link>
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-            {/* TEMP: preview toggle for the support popup — remove when the design is settled */}
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(SUPPORT_POPUP_EVENT))}
-              aria-label="Hap popup-in e mbështetjes"
-              title="Preview popup (temp)"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white transition-colors sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3.5"
+              aria-label="Përkrah Krahaso — ndihmo që platforma të mbetet falas"
+              title="Përkrah Krahaso"
+              className="group flex h-8 items-center gap-1 rounded-full pl-1 pr-2 text-[11px] font-bold tracking-tight text-white transition-transform active:scale-[0.97] sm:h-9 sm:gap-1.5 sm:pl-1.5 sm:pr-3 sm:text-xs"
               style={{
-                backgroundColor: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.16)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.14)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
+                background:
+                  "linear-gradient(180deg, rgba(239,68,68,0.28) 0%, rgba(239,68,68,0.16) 100%)",
+                border: "1px solid rgba(252,165,165,0.45)",
+                boxShadow: "0 0 0 1px rgba(239,68,68,0.12), 0 6px 16px rgba(239,68,68,0.18)",
               }}
             >
-              <HeartHandshake className="h-3.5 w-3.5" style={{ color: "#ef4444" }} />
-              <span className="hidden sm:inline">Përkrah Krahaso</span>
+              <span
+                className="flex h-5 w-5 items-center justify-center rounded-full sm:h-6 sm:w-6"
+                style={{ backgroundColor: "#ef4444" }}
+              >
+                <HeartHandshake className="krahaso-heart-beat h-3 w-3 text-white sm:h-3.5 sm:w-3.5" />
+              </span>
+              <span className="leading-none">
+                Përkrah
+                <span className="hidden sm:inline"> Krahaso</span>
+              </span>
             </button>
             <button
               onClick={toggle}

@@ -196,13 +196,32 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    touch-action: pan-x pan-y;
+  }
+  body {
+    @apply bg-background text-foreground;
+    touch-action: pan-x pan-y;
   }
   a {
     color: inherit;
   }
+}
+
+@keyframes krahaso-heart {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.16);
+  }
+  60% {
+    transform: scale(0.94);
+  }
+}
+
+.krahaso-heart-beat {
+  animation: krahaso-heart 1.8s ease-in-out infinite;
 }

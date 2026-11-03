@@ -12,10 +12,10 @@ const ThemeContext = createContext<{
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
-  // On mount, read persisted preference
+  // Light is the default. Only restore dark if the visitor chose it themselves.
   useEffect(() => {
-    const stored = localStorage.getItem("krahaso-theme") as Theme | null;
-    const preferred = stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const stored = localStorage.getItem("krahaso-theme");
+    const preferred: Theme = stored === "dark" ? "dark" : "light";
     setTheme(preferred);
     document.documentElement.classList.toggle("dark", preferred === "dark");
   }, []);
