@@ -9,9 +9,13 @@ import type {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
+/** Never let a slow/down API hang a render (or the build) — fail fast instead. */
+const FETCH_TIMEOUT_MS = 8_000;
+
 async function get<T>(path: string, revalidateSeconds = 60): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     next: { revalidate: revalidateSeconds },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   return readJson(res, path);
 }
@@ -22,7 +26,10 @@ async function get<T>(path: string, revalidateSeconds = 60): Promise<T> {
  * Listing pages keep the short revalidate in {@link get}.
  */
 async function getFresh<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_URL}${path}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   return readJson(res, path);
 }
 

@@ -7,7 +7,7 @@ services:
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    plan: starter
+    plan: free
     healthCheckPath: /api/categories
     envVars:
       # docker-entrypoint.sh converts postgres:// → jdbc:postgresql://
@@ -32,12 +32,10 @@ services:
       - key: KRAHASO_FEED_ALLOW_PRIVATE_HOSTS
         value: "false"
       - key: KRAHASO_CORS_ALLOWED_ORIGINS
-        value: http://localhost:3000
-      # Override after Vercel deploy, e.g.:
-      # https://krahaso.vercel.app,http://localhost:3000
+        value: https://krahaso-seven.vercel.app,http://localhost:3000
 
 databases:
   - name: krahaso-db
-    plan: basic-256mb
+    plan: free
     databaseName: krahaso
     user: krahaso

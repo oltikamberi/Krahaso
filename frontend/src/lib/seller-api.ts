@@ -26,11 +26,16 @@ export async function getSeller(): Promise<Seller | null> {
   const token = (await cookies()).get(SELLER_COOKIE)?.value;
   if (!token) return null;
 
-  const res = await fetch(sellerApiUrl("/api/seller/me"), {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-
-  return res.json() as Promise<Seller>;
+  try {
+    const res = await fetch(sellerApiUrl("/api/seller/me"), {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as Seller;
+  } catch {
+    // API unreachable — treat as logged out rather than hanging the page.
+    return null;
+  }
 }

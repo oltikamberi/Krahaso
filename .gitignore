@@ -22,3 +22,5 @@ backend/target/
 
 # Logs
 *.log
+.vercel
+.env*
