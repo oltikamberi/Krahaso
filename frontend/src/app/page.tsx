@@ -42,6 +42,9 @@ function pickHeroDeals(items: GroupedProduct[], limit = 8): GroupedProduct[] {
     .map(({ product }) => product);
 }
 
+/** Always pull the live catalog — a frozen ISR snapshot hid products after the first deploy. */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   let products = EMPTY_PAGE;
   let deals: GroupedProduct[] = [];

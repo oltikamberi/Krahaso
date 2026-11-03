@@ -17,6 +17,8 @@ interface PageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const filters = await searchParams;

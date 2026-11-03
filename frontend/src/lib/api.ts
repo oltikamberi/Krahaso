@@ -9,8 +9,12 @@ import type {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
-/** Never let a slow/down API hang a render (or the build) — fail fast instead. */
-const FETCH_TIMEOUT_MS = 8_000;
+/**
+ * Render's free plan can take ~30–60s to wake. Keep this long enough that a
+ * cold start still returns catalog data, but short enough a truly down API
+ * cannot stall a Vercel build forever.
+ */
+const FETCH_TIMEOUT_MS = 45_000;
 
 async function get<T>(path: string, revalidateSeconds = 60): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {

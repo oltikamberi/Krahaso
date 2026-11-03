@@ -30,7 +30,7 @@ export async function getSeller(): Promise<Seller | null> {
     const res = await fetch(sellerApiUrl("/api/seller/me"), {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-      signal: AbortSignal.timeout(8_000),
+      signal: AbortSignal.timeout(45_000),
     });
     if (!res.ok) return null;
     return (await res.json()) as Seller;
