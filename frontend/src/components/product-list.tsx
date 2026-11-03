@@ -67,8 +67,12 @@ export function ProductList({
             type="button"
             onClick={loadMore}
             disabled={isPending}
-            className="min-h-11 px-4 text-sm font-bold underline underline-offset-4 transition-opacity hover:opacity-70 active:opacity-60 disabled:opacity-50 sm:min-h-0 sm:px-0"
-            style={{ color: "var(--foreground)" }}
+            className="min-h-11 rounded-lg px-6 py-2.5 text-sm font-bold transition-colors disabled:opacity-50 sm:min-h-0"
+            style={{
+              backgroundColor: "var(--warm-tint)",
+              color: "var(--warm)",
+              border: "1px solid rgba(234,88,12,0.25)",
+            }}
           >
             {isPending ? "Duke ngarkuar…" : "Më shumë produkte"}
           </button>

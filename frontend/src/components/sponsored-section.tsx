@@ -35,18 +35,23 @@ function SponsoredCard({ product }: { product: GroupedProduct }) {
   return (
     <Link
       href={detailId ? `/produkti/${detailId}` : "#"}
-      className="group flex w-[164px] shrink-0 snap-start flex-col overflow-hidden rounded-xl bg-white transition-shadow hover:shadow-md sm:w-auto sm:flex-1 sm:snap-none"
-      style={{ border: "1px solid var(--border)" }}
+      className="group flex w-[164px] shrink-0 snap-start flex-col overflow-hidden rounded-xl transition-shadow hover:shadow-md sm:w-auto sm:flex-1 sm:snap-none"
+      style={{
+        backgroundColor: "var(--card)",
+        border: "1px solid var(--border)",
+      }}
     >
       {/* Fixed-height image box keeps every card the same height in the scroller */}
       <div
-        className="relative flex h-[124px] items-center justify-center bg-[var(--secondary)] sm:h-auto sm:aspect-[4/3]"
+        className="relative flex h-[124px] items-center justify-center sm:h-auto sm:aspect-[4/3]"
+        style={{ backgroundColor: "var(--secondary)" }}
       >
         <span
           className="absolute left-2 top-2 z-10 rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider"
           style={{
-            backgroundColor: "var(--deal)",
-            color: "var(--deal-foreground)",
+            backgroundColor: "var(--card)",
+            color: "var(--muted-foreground)",
+            border: "1px solid var(--border)",
           }}
         >
           Sponsorizuar
@@ -77,7 +82,7 @@ function SponsoredCard({ product }: { product: GroupedProduct }) {
           {product.name}
         </p>
         <p
-          className="mt-auto font-mono text-sm font-bold tabular-nums"
+          className="mt-auto font-mono text-sm font-extrabold tracking-tight tabular-nums"
           style={{ color: "var(--price-highlight)" }}
         >
           {formatPrice(product.lowestPrice, product.currency)}
@@ -111,15 +116,16 @@ export function SponsoredSection({ products }: { products: GroupedProduct[] }) {
             <span
               className="mb-1.5 inline-block rounded px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"
               style={{
-                backgroundColor: "var(--deal)",
-                color: "var(--deal-foreground)",
+                backgroundColor: "var(--secondary)",
+                color: "var(--muted-foreground)",
+                border: "1px solid var(--border)",
               }}
             >
               Sponsorizuar
             </span>
             <h2
               className="text-lg font-bold tracking-tight sm:text-xl"
-              style={{ color: "var(--foreground)" }}
+              style={{ color: "var(--heading)" }}
             >
               Zgjedhje të rekomanduara
             </h2>

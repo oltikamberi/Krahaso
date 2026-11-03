@@ -134,7 +134,7 @@ export default function FramerCarousel({
           ref={containerRef}
           style={{
             border: "1px solid var(--border)",
-            boxShadow: "0 8px 32px rgba(0,59,113,0.08)",
+            boxShadow: "0 1px 2px rgba(15,23,42,0.04), 0 16px 40px rgba(11,31,58,0.12)",
           }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
@@ -142,7 +142,7 @@ export default function FramerCarousel({
           <div className="absolute left-3 top-3 z-10 sm:left-4 sm:top-4">
             <span
               className="rounded-md bg-white px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] shadow-sm sm:text-[10px]"
-              style={{ color: "var(--brand)" }}
+              style={{ color: "#ea580c" }}
             >
               Produkte me kursim të lartë
             </span>
@@ -162,24 +162,38 @@ export default function FramerCarousel({
                     className="h-full w-full select-none bg-white object-contain p-6 pointer-events-none sm:p-8"
                     draggable={false}
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-16 text-white">
+                  <div
+                    className="absolute inset-x-0 bottom-0 p-4 pb-9 pt-20 text-white sm:pb-10"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(11,31,58,0.92) 0%, rgba(11,31,58,0.55) 45%, transparent 100%)",
+                    }}
+                  >
                     {item.badge && (
                       <span
-                        className="mb-2 inline-block rounded px-2 py-1 font-mono text-[11px] font-bold shadow-sm"
+                        className="mb-2 inline-flex items-center gap-1 rounded-md px-2 py-1 font-mono text-[11px] font-bold shadow-sm"
                         style={{
-                          backgroundColor: "#ffffff",
-                          color: "var(--savings)",
+                          backgroundColor: "#d1fae5",
+                          color: "#047857",
                         }}
                       >
                         {item.badge}
                       </span>
                     )}
-                    <h3 className="line-clamp-2 text-sm font-bold leading-snug sm:text-base">
+                    <h3 className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
                       {item.title}
                     </h3>
                     {item.subtitle && (
-                      <p className="mt-1 font-mono text-lg font-bold tabular-nums text-[var(--deal)]">
-                        {item.subtitle}
+                      <p className="mt-1 flex items-baseline gap-2">
+                        <span
+                          className="font-mono text-xl font-black tracking-tight tabular-nums"
+                          style={{ color: "#fb923c" }}
+                        >
+                          {item.subtitle}
+                        </span>
+                        <span className="text-[11px] font-medium text-white/70">
+                          çmimi më i ulët
+                        </span>
                       </p>
                     )}
                   </div>

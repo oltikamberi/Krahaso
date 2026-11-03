@@ -84,8 +84,8 @@ export function PriceComparisonStack({ offers, currency }: Props) {
                   <span
                     className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
                     style={{
-                      backgroundColor: isHighlighted ? "var(--deal)" : "var(--border)",
-                      color: isHighlighted ? "var(--deal-foreground)" : "var(--muted-foreground)",
+                      backgroundColor: isHighlighted ? "var(--savings)" : "var(--border)",
+                      color: isHighlighted ? "#ffffff" : "var(--muted-foreground)",
                     }}
                   >
                     {i + 1}
@@ -98,8 +98,8 @@ export function PriceComparisonStack({ offers, currency }: Props) {
                   <span
                     className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
                     style={{
-                      backgroundColor: "var(--deal)",
-                      color: "var(--deal-foreground)",
+                      backgroundColor: "var(--savings)",
+                      color: "#ffffff",
                     }}
                   >
                     Më i lirë
@@ -109,9 +109,11 @@ export function PriceComparisonStack({ offers, currency }: Props) {
 
               <div className="flex items-center gap-2 sm:gap-3">
                 <span
-                  className="font-mono text-sm font-bold tabular-nums"
+                  className={`font-mono tabular-nums tracking-tight ${
+                    listing.id === cheapestId ? "text-base font-black" : "text-sm font-semibold"
+                  }`}
                   style={{
-                    color: isHighlighted ? "var(--price-highlight)" : "var(--price-muted)",
+                    color: listing.id === cheapestId ? "var(--price)" : "var(--price-muted)",
                   }}
                 >
                   {formatPrice(listing.price, currency)}
@@ -120,10 +122,25 @@ export function PriceComparisonStack({ offers, currency }: Props) {
                   href={listing.productUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 rounded px-2.5 py-1 text-xs font-bold transition-colors"
-                  style={{
-                    backgroundColor: isHighlighted ? "var(--action)" : "var(--brand)",
-                    color: "#fff",
+                  className="flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-bold transition-colors"
+                  style={
+                    isHighlighted
+                      ? { backgroundColor: "var(--action)", color: "var(--action-foreground)" }
+                      : {
+                          backgroundColor: "var(--card)",
+                          color: "var(--foreground)",
+                          border: "1px solid var(--border)",
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = isHighlighted
+                      ? "var(--action-hover)"
+                      : "var(--secondary)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = isHighlighted
+                      ? "var(--action)"
+                      : "var(--card)";
                   }}
                 >
                   Shko

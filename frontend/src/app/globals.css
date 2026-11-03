@@ -60,107 +60,136 @@
 :root {
   /*
    * Brand palette
-   * #003B71 brand · #F2C94C deal gold · #FFFFFF white · #F4F6F9 cool gray
-   * #27AE60 savings · #FF6B4A coral CTA · #1E293B charcoal text
+   * Trust navy #0B1F3A · Brand blue #1D4ED8 · Savings #047857 · Tint #D1FAE5
+   * Action amber #F59E0B · Alert #B91C1C · Ink #0F172A · Slate #475569
+   * Border #E2E8F0 · Canvas #F8FAFC
    */
-  --background: #ffffff;
-  --foreground: #1e293b;
-  --card: #f4f6f9;
-  --card-foreground: #1e293b;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #1e293b;
-  --primary: #ff6b4a;
+  --popover-foreground: #0f172a;
+  --primary: #1d4ed8;
   --primary-foreground: #ffffff;
-  --secondary: #f4f6f9;
-  --secondary-foreground: #003b71;
-  --muted: #f4f6f9;
-  --muted-foreground: #64748b;
-  --accent: #f4f6f9;
-  --accent-foreground: #003b71;
-  --destructive: oklch(0.577 0.245 27.325);
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0b1f3a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+  --destructive: #b91c1c;
   --border: #e2e8f0;
   --input: #ffffff;
-  --ring: #ff6b4a;
-  --chart-1: #ff6b4a;
-  --chart-2: #003b71;
-  --chart-3: #27ae60;
-  --chart-4: #f4f6f9;
-  --chart-5: #f2c94c;
+  --ring: #1d4ed8;
+  --chart-1: #1d4ed8;
+  --chart-2: #0b1f3a;
+  --chart-3: #047857;
+  --chart-4: #f1f5f9;
+  --chart-5: #f59e0b;
   --radius: 0.5rem;
-  --sidebar: #f4f6f9;
-  --sidebar-foreground: #1e293b;
-  --sidebar-primary: #003b71;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0b1f3a;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ffffff;
-  --sidebar-accent-foreground: #003b71;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0b1f3a;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #ff6b4a;
+  --sidebar-ring: #1d4ed8;
 
-  --brand: #003b71;
+  /* Trust navy — header, footer, headings */
+  --trust: #0b1f3a;
+  --trust-hover: #132d52;
+  /* Headings + primary dark CTA (navy in light, light in dark) */
+  --heading: #0b1f3a;
+  --cta: #ea580c;
+  --cta-foreground: #ffffff;
+  --cta-hover: #c2410c;
+  --cta-price: #ffffff;
+  /* Brand blue — links, filters, selected */
+  --brand: #1d4ed8;
   --brand-foreground: #ffffff;
-  --deal: #f2c94c;
-  --deal-foreground: #003b71;
-  --price: #1e293b;
-  --price-highlight: #003b71;
-  --price-muted: #64748b;
-  --savings: #27ae60;
-  --savings-bg: rgba(39, 174, 96, 0.12);
-  --action: #ff6b4a;
+  --brand-soft: #1d4ed8;
+  --brand-tint: #eff6ff;
+  /* Warm orange accent used on navy surfaces (logo word, header icons) */
+  --deal: #fb923c;
+  --warm: #ea580c;
+  --warm-tint: #fff7ed;
+  --deal-foreground: #0b1f3a;
+  /* Prices / body — richer orange for clearer contrast on white/green */
+  --price: #e85d04;
+  --price-highlight: #e85d04;
+  --price-muted: #475569;
+  /* Savings */
+  --savings: #047857;
+  --savings-bg: #d1fae5;
+  /* Store CTA */
+  --action: #ea580c;
   --action-foreground: #ffffff;
-  --action-hover: #e55a3e;
-  --cheapest-bg: rgba(242, 201, 76, 0.22);
-  --cheapest-border: rgba(242, 201, 76, 0.55);
-  --brand-soft: #003b71;
+  --action-hover: #c2410c;
+  /* Cheapest / small-diff chips */
+  --cheapest-bg: #d1fae5;
+  --cheapest-border: rgba(4, 120, 87, 0.35);
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #f1f5f9;
-  --card: #121212;
-  --card-foreground: #f1f5f9;
-  --popover: #121212;
-  --popover-foreground: #f1f5f9;
-  --primary: #ff6b4a;
+  --background: #0b1220;
+  --foreground: #f8fafc;
+  --card: #111827;
+  --card-foreground: #f8fafc;
+  --popover: #111827;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #93c5fd;
-  --muted: #1a1a1a;
+  --secondary: #1e293b;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1e293b;
   --muted-foreground: #94a3b8;
-  --accent: #1a1a1a;
+  --accent: #1e293b;
   --accent-foreground: #93c5fd;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: #2a2a2a;
-  --input: #1a1a1a;
-  --ring: #ff6b4a;
-  --chart-1: #ff6b4a;
-  --chart-2: #60a5fa;
-  --chart-3: #27ae60;
-  --chart-4: #1a1a1a;
-  --chart-5: #f2c94c;
-  --sidebar: #121212;
-  --sidebar-foreground: #f1f5f9;
-  --sidebar-primary: #ff6b4a;
+  --destructive: #ef4444;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #93c5fd;
+  --chart-3: #34d399;
+  --chart-4: #1e293b;
+  --chart-5: #fbbf24;
+  --sidebar: #111827;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #f1f5f9;
-  --sidebar-border: #2a2a2a;
-  --sidebar-ring: #ff6b4a;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #3b82f6;
 
-  --brand: #003b71;
+  --trust: #0b1f3a;
+  --trust-hover: #132d52;
+  --heading: #f8fafc;
+  --cta: #ea580c;
+  --cta-foreground: #ffffff;
+  --cta-hover: #c2410c;
+  --cta-price: #ffffff;
+  --brand: #3b82f6;
   --brand-foreground: #ffffff;
-  --deal: #f2c94c;
-  --deal-foreground: #1e293b;
-  --price: #f1f5f9;
-  --price-highlight: #f2c94c;
+  --brand-soft: #93c5fd;
+  --brand-tint: rgba(59, 130, 246, 0.14);
+  --deal: #fb923c;
+  --warm: #f97316;
+  --warm-tint: rgba(249, 115, 22, 0.14);
+  --deal-foreground: #0b1f3a;
+  --price: #fb923c;
+  --price-highlight: #fb923c;
   --price-muted: #94a3b8;
-  --savings: #27ae60;
-  --savings-bg: rgba(39, 174, 96, 0.18);
-  --action: #ff6b4a;
+  --savings: #34d399;
+  --savings-bg: rgba(4, 120, 87, 0.22);
+  --action: #f97316;
   --action-foreground: #ffffff;
-  --action-hover: #e55a3e;
-  --cheapest-bg: rgba(242, 201, 76, 0.16);
-  --cheapest-border: rgba(242, 201, 76, 0.4);
-  --brand-soft: #60a5fa;
+  --action-hover: #ea580c;
+  --cheapest-bg: rgba(4, 120, 87, 0.22);
+  --cheapest-border: rgba(52, 211, 153, 0.4);
 }
 
 @layer base {

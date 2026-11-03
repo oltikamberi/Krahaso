@@ -33,16 +33,16 @@ export function StatsStrip() {
                 <span
                   className="flex h-9 w-9 items-center justify-center rounded-full sm:h-8 sm:w-8"
                   style={{
-                    backgroundColor: "var(--background)",
-                    border: "1px solid var(--border)",
-                    color: "var(--brand-soft)",
+                    backgroundColor: "var(--savings-bg)",
+                    border: "1px solid rgba(4,120,87,0.22)",
+                    color: "var(--savings)",
                   }}
                 >
                   <Icon className="h-4 w-4" strokeWidth={2} />
                 </span>
                 <span
                   className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] sm:text-xs"
-                  style={{ color: "var(--brand-soft)" }}
+                  style={{ color: "var(--heading)" }}
                 >
                   {label}
                 </span>

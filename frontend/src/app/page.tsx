@@ -91,7 +91,7 @@ export default async function HomePage() {
             <div className="mb-4 sm:mb-6">
               <h2
                 className="text-lg font-bold tracking-tight sm:text-xl"
-                style={{ color: "var(--foreground)" }}
+                style={{ color: "var(--heading)" }}
               >
                 Krahaso produktet
               </h2>

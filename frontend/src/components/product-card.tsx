@@ -44,8 +44,11 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
 
   return (
     <div
-      className="@container group relative flex h-full flex-col overflow-hidden rounded-lg bg-card transition-shadow duration-200 hover:shadow-lg active:shadow-md"
-      style={{ border: "1px solid var(--border)" }}
+      className="@container group relative flex h-full flex-col overflow-hidden rounded-xl bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(11,31,58,0.10)] active:translate-y-0"
+      style={{
+        border: "1px solid var(--border)",
+        boxShadow: "0 1px 2px rgba(15,23,42,0.04)",
+      }}
     >
       <button
         type="button"
@@ -167,25 +170,27 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
                   {offer.providerName}
                 </span>
                 <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-                  <span
-                    className="font-mono text-xs font-bold tabular-nums sm:text-sm"
-                    style={{
-                      color: isHighlighted ? "var(--price-highlight)" : "var(--price-muted)",
-                    }}
-                  >
-                    {formatPrice(offer.price, offer.currency)}
-                  </span>
                   {isHighlighted && (
                     <span
                       className="hidden rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider @[260px]:inline"
                       style={{
-                        backgroundColor: "var(--deal)",
-                        color: "var(--deal-foreground)",
+                        backgroundColor: "var(--savings)",
+                        color: "#ffffff",
                       }}
                     >
                       Më i lirë
                     </span>
                   )}
+                  <span
+                    className={`font-mono tabular-nums tracking-tight ${
+                      isCheapest ? "text-[13px] font-black sm:text-[15px]" : "text-xs font-semibold sm:text-sm"
+                    }`}
+                    style={{
+                      color: isCheapest ? "var(--price)" : "var(--price-muted)",
+                    }}
+                  >
+                    {formatPrice(offer.price, offer.currency)}
+                  </span>
                 </div>
               </div>
             );
@@ -197,7 +202,7 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
         <div>
           <p
             className="mb-0.5 truncate font-mono text-[9px] font-semibold uppercase tracking-widest sm:mb-1 sm:text-[10px]"
-            style={{ color: "var(--brand-soft)" }}
+            style={{ color: "var(--muted-foreground)" }}
           >
             {product.categorySlug}
           </p>
@@ -214,20 +219,23 @@ export function ProductCard({ product }: { product: GroupedProduct }) {
         {lowest && detailId && (
           <Link
             href={`/produkti/${detailId}`}
-            className="mt-auto flex min-h-10 items-center justify-center gap-1.5 rounded px-2 py-2 text-[11px] font-bold transition-colors hover:opacity-95 active:opacity-90 sm:min-h-0 sm:gap-2 sm:py-2.5 sm:text-xs"
-            style={{
-              backgroundColor: "var(--action)",
-              color: "var(--action-foreground)",
-            }}
+            className="mt-auto flex min-h-10 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-bold text-white transition-colors sm:min-h-0 sm:gap-2 sm:py-2.5 sm:text-xs"
+            style={{ backgroundColor: "var(--cta)" }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--action-hover)";
+              e.currentTarget.style.backgroundColor = "var(--cta-hover)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--action)";
+              e.currentTarget.style.backgroundColor = "var(--cta)";
             }}
           >
             <span className="truncate">
-              Shiko produktin — {formatPrice(lowest.price, lowest.currency)}
+              Shiko produktin —{" "}
+              <span
+                className="font-mono font-black tabular-nums"
+                style={{ color: "var(--cta-price)" }}
+              >
+                {formatPrice(lowest.price, lowest.currency)}
+              </span>
             </span>
           </Link>
         )}

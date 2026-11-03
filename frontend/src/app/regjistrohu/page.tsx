@@ -5,8 +5,8 @@ import { SellerRegisterForm } from "@/components/seller-register-form";
 import { getSeller } from "@/lib/seller-api";
 
 export const metadata: Metadata = {
-  title: "Regjistro biznesin tënd  — Krahaso Cmimin",
-  description: "Regjistro dyqanin tënd dhe listo produktet në Krahaso Cmimin.",
+  title: "Regjistro biznesin tënd  — Krahaso Çmimin",
+  description: "Regjistro dyqanin tënd dhe listo produktet në Krahaso Çmimin.",
 };
 
 export default async function RegisterPage() {

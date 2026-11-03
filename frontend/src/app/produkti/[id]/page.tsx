@@ -1,14 +1,6 @@
 import Link from "next/link";
 import { ExternalLink, ImageOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { CategoryNavBar } from "@/components/category-nav-bar";
 import { formatPrice, getProduct } from "@/lib/api";
 import { upgradeImageUrl } from "@/lib/image-url";
@@ -21,7 +13,6 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
   const product = await getProduct(id);
-  const history = [...product.priceHistory].reverse();
 
   const offers = (
     product.offers && product.offers.length > 0
@@ -104,7 +95,7 @@ export default async function ProductPage({ params }: PageProps) {
               {product.brand}
             </p>
           )}
-          <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: "var(--foreground)" }}>
+          <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: "var(--heading)" }}>
             {product.name}
           </h1>
 
@@ -116,13 +107,22 @@ export default async function ProductPage({ params }: PageProps) {
                     ? `Nga ${offers.length} dyqane · më i liri`
                     : `1 dyqan`}
                 </p>
-                <span className="font-mono text-3xl font-extrabold" style={{ color: "var(--price-highlight)" }}>
+                <span
+                  className="font-mono text-3xl font-black tracking-tight"
+                  style={{ color: "var(--price-highlight)" }}
+                >
                   {formatPrice(cheapest.price, product.currency)}
                 </span>
               </div>
               {savings > 5 ? (
-                <span className="mb-1 text-lg font-bold" style={{ color: "var(--savings)" }}>
-                  Kurseni deri {formatPrice(savings, product.currency)}
+                <span
+                  className="mb-1 inline-flex items-baseline gap-1.5 rounded-md px-2.5 py-1 text-sm font-bold"
+                  style={{ backgroundColor: "var(--savings-bg)", color: "var(--savings)" }}
+                >
+                  Kurseni deri
+                  <span className="font-mono text-base tabular-nums">
+                    {formatPrice(savings, product.currency)}
+                  </span>
                 </span>
               ) : offers.length > 1 && savings > 0 && savings <= 5 ? (
                 <span
@@ -168,7 +168,7 @@ export default async function ProductPage({ params }: PageProps) {
               href={cheapest.productUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-2 rounded px-5 py-2.5 text-sm font-bold transition-colors"
+              className="inline-flex w-fit items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold shadow-sm transition-colors hover:bg-[var(--action-hover)]"
               style={{
                 backgroundColor: "var(--action)",
                 color: "var(--action-foreground)",
@@ -206,51 +206,6 @@ export default async function ProductPage({ params }: PageProps) {
               </dl>
             )}
           </div>
-        </div>
-      </div>
-
-      <div
-        className="overflow-hidden rounded-lg"
-        style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
-      >
-        <div className="border-b px-5 py-4" style={{ borderColor: "var(--border)" }}>
-          <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: "var(--foreground)" }}>
-            Historia e çmimit
-          </h2>
-        </div>
-        <div className="p-2">
-          {history.length === 0 ? (
-            <p className="px-3 py-6 text-sm" style={{ color: "var(--muted-foreground)" }}>
-              Nuk ka ende histori çmimi për këtë listim.
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Çmimi</TableHead>
-                  <TableHead>Disponueshmëria</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {history.map((point, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      {new Date(point.scrapedAt).toLocaleDateString("sq-AL", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </TableCell>
-                    <TableCell className="font-mono font-semibold" style={{ color: "var(--price-highlight)" }}>
-                      {formatPrice(point.price, product.currency)}
-                    </TableCell>
-                    <TableCell>{point.inStock ? "Në stok" : "Jo në stok"}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
         </div>
       </div>
       </div>

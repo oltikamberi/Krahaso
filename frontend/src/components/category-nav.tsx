@@ -61,12 +61,12 @@ export function CategoryNav({ categories }: { categories: Category[] }) {
         </div>
       </nav>
 
-      {/* ── Desktop: dark tab bar ─────────────────────────────────────── */}
+      {/* ── Desktop: light tab bar under the navy header ──────────────── */}
       <div
         className="hidden md:block"
         style={{
-          backgroundColor: isDark ? "#121212" : "var(--brand)",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          backgroundColor: isDark ? "var(--card)" : "#ffffff",
+          borderBottom: "1px solid var(--border)",
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-4">
@@ -106,9 +106,9 @@ function Chip({
       aria-current={active ? "page" : undefined}
       className="flex min-h-10 shrink-0 snap-start items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-colors active:scale-[0.98]"
       style={{
-        backgroundColor: active ? "var(--brand)" : "var(--secondary)",
-        color: active ? "#fff" : "var(--foreground)",
-        border: active ? "1px solid var(--brand)" : "1px solid var(--border)",
+        backgroundColor: active ? "var(--action)" : "var(--secondary)",
+        color: active ? "var(--action-foreground)" : "var(--foreground)",
+        border: active ? "1px solid var(--action)" : "1px solid var(--border)",
       }}
     >
       {children}
@@ -131,20 +131,25 @@ function Tab({
   return (
     <Link
       href={href}
-      className="group relative flex shrink-0 items-center gap-2 px-4 py-3 text-xs transition-colors hover:text-white"
+      aria-current={active ? "page" : undefined}
+      className="group relative flex shrink-0 items-center gap-2 px-4 py-3 text-[13px] transition-colors"
       style={{
-        color: active ? "#fff" : "rgba(255,255,255,0.7)",
+        color: active ? "var(--heading)" : "var(--muted-foreground)",
         fontWeight: active ? 700 : 500,
+      }}
+      onMouseEnter={(e) => {
+        if (!active) e.currentTarget.style.color = "var(--foreground)";
+      }}
+      onMouseLeave={(e) => {
+        if (!active) e.currentTarget.style.color = "var(--muted-foreground)";
       }}
     >
       {children}
-      <span className="border-b border-transparent transition-colors group-hover:border-white">
-        {label}
-      </span>
+      <span>{label}</span>
       {active && (
         <span
-          className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t"
-          style={{ backgroundColor: "var(--deal)" }}
+          className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
+          style={{ backgroundColor: "var(--action)" }}
         />
       )}
     </Link>

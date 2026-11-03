@@ -25,8 +25,12 @@ export function SearchProductList({ products }: { products: GroupedProduct[] }) 
           <button
             type="button"
             onClick={() => setVisible((n) => n + pageSize)}
-            className="min-h-11 px-4 text-sm font-bold underline underline-offset-4 transition-opacity hover:opacity-70 active:opacity-60 sm:min-h-0 sm:px-0"
-            style={{ color: "var(--foreground)" }}
+            className="min-h-11 rounded-lg px-6 py-2.5 text-sm font-bold transition-colors sm:min-h-0"
+            style={{
+              backgroundColor: "var(--warm-tint)",
+              color: "var(--warm)",
+              border: "1px solid rgba(234,88,12,0.25)",
+            }}
           >
             Më shumë produkte
           </button>

@@ -6,8 +6,8 @@ import { SellerLoginForm } from "@/components/seller-login-form";
 import { getSeller } from "@/lib/seller-api";
 
 export const metadata: Metadata = {
-  title: "Hyrje për shitës — Krahaso Cmimin",
-  description: "Hyr në panelin e shitësit në Krahaso Cmimin.",
+  title: "Hyrje për shitës — Krahaso Çmimin",
+  description: "Hyr në panelin e shitësit në Krahaso Çmimin.",
 };
 
 export default async function LoginPage() {

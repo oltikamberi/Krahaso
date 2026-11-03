@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Krahaso Cmimin — Krahaso çmimet në Kosovë",
+  title: "Krahaso Çmimin — Krahaso çmimet në Kosovë",
   description:
     "Krahaso çmimet e produkteve elektronike nga dyqanet online në Kosovë dhe gjej ofertën më të mirë.",
 };
