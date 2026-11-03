@@ -1,0 +1,43 @@
+# Render Blueprint — backend + Postgres.
+# Redis is optional for beta: set SPRING_CACHE_TYPE=simple (below).
+# After first deploy, set KRAHASO_CORS_ALLOWED_ORIGINS to your Vercel URL.
+services:
+  - type: web
+    name: krahaso-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /api/categories
+    envVars:
+      # docker-entrypoint.sh converts postgres:// → jdbc:postgresql://
+      - key: DATABASE_URL
+        fromDatabase:
+          name: krahaso-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: krahaso-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: krahaso-db
+          property: password
+      - key: SPRING_CACHE_TYPE
+        value: simple
+      - key: SPRING_AUTOCONFIGURE_EXCLUDE
+        value: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - key: KRAHASO_SELLER_TOKEN_SECRET
+        generateValue: true
+      - key: KRAHASO_FEED_ALLOW_PRIVATE_HOSTS
+        value: "false"
+      - key: KRAHASO_CORS_ALLOWED_ORIGINS
+        value: http://localhost:3000
+      # Override after Vercel deploy, e.g.:
+      # https://krahaso.vercel.app,http://localhost:3000
+
+databases:
+  - name: krahaso-db
+    plan: basic-256mb
+    databaseName: krahaso
+    user: krahaso

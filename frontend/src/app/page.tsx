@@ -1,7 +1,6 @@
 import { CategoryNavBar } from "@/components/category-nav-bar";
 import { HomeHero } from "@/components/home-hero";
 import { ProductList } from "@/components/product-list";
-import { SponsoredSection } from "@/components/sponsored-section";
 import { StatsStrip } from "@/components/stats-strip";
 import { getProducts } from "@/lib/api";
 import { productsPerPage } from "@/lib/product-grid";
@@ -43,36 +42,15 @@ function pickHeroDeals(items: GroupedProduct[], limit = 8): GroupedProduct[] {
     .map(({ product }) => product);
 }
 
-/** Placeholder sponsored picks: in-stock-ish popular items, not overlapping hero deals. */
-function pickSponsored(
-  items: GroupedProduct[],
-  excludeKeys: Set<string>,
-  limit = 4,
-): GroupedProduct[] {
-  return items
-    .filter(
-      (p) =>
-        !excludeKeys.has(p.matchKey) &&
-        p.offerCount >= 2 &&
-        Boolean(p.imageUrl || p.offers.some((o) => o.imageUrl)),
-    )
-    .slice(0, limit);
-}
-
 export default async function HomePage() {
   let products = EMPTY_PAGE;
   let deals: GroupedProduct[] = [];
-  let sponsored: GroupedProduct[] = [];
   const pageSize = productsPerPage("home");
   const listFilters = { sort: "best", size: String(pageSize) };
 
   try {
     products = await getProducts({ page: "0", ...listFilters });
     deals = pickHeroDeals(products.items);
-    sponsored = pickSponsored(
-      products.items,
-      new Set(deals.map((d) => d.matchKey)),
-    );
   } catch {
     /* API offline */
   }
@@ -83,7 +61,6 @@ export default async function HomePage() {
       {/* Phone: categories sit just above the stats/info strip */}
       <CategoryNavBar className="md:hidden" />
       <StatsStrip />
-      <SponsoredSection products={sponsored} />
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
         {products.items.length > 0 ? (

@@ -65,6 +65,16 @@ export function SiteHeader() {
                 style={{ backgroundColor: "#059669" }}
               />
             </div>
+            <span
+              className="self-start rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em]"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.12)",
+                color: "rgba(255,255,255,0.85)",
+                border: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              Beta
+            </span>
           </Link>
 
           <div className="flex items-center gap-3">
